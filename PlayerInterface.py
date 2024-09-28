@@ -7,7 +7,7 @@ class PlayerInterface:
     def __init__(self, root):
         self.root = root
         self.root.title("Rei nos Cantos")
-        self.root.geometry("1280x900")
+        self.root.geometry("1280x700")
         self.root.configure(bg='darkgreen')
 
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -44,7 +44,7 @@ class PlayerInterface:
 
         logo_image_path = os.path.join(self.base_dir, "images", "logo.png")
         logo_image = Image.open(logo_image_path)
-        logo_image = logo_image.resize((700, 700), Image.Resampling.LANCZOS)
+        logo_image = logo_image.resize((500, 500), Image.Resampling.LANCZOS)
         self.logo_photo = ImageTk.PhotoImage(logo_image)
 
         self.logo_label = tk.Label(self.center_frame, image=self.logo_photo, bg='darkgreen')
