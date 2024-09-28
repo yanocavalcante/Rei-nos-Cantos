@@ -1,13 +1,16 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk  # type: ignore
+import os
 
-class ReiNosCantosApp:
+class PlayerInterface:
     def __init__(self, root):
         self.root = root
         self.root.title("Rei nos Cantos")
-        self.root.geometry("1380x900")
+        self.root.geometry("1280x900")
         self.root.configure(bg='darkgreen')
+
+        self.base_dir = os.path.dirname(os.path.abspath(__file__))
 
         self.center_frame = tk.Frame(self.root, bg='darkgreen')
         self.center_frame.pack(expand=True)  
@@ -22,14 +25,14 @@ class ReiNosCantosApp:
         images = {}
         for suit in suits:
             for rank in ranks:
-                image_path = f"/home/bridge/Rei-nos-Cantos/images/cartas/{rank}_of_{suit}.png"
+                image_path = os.path.join(self.base_dir, "images", "cartas", f"{rank}_of_{suit}.png")
                 image = Image.open(image_path)
                 image = image.resize((70, 100), Image.Resampling.LANCZOS)
                 images[f"{rank}_of_{suit}"] = ImageTk.PhotoImage(image)
         return images
 
     def load_reverse_card_image(self):
-        image = Image.open("/home/bridge/Rei-nos-Cantos/images/carta_ao_contrario.png")
+        image = Image.open(os.path.join(self.base_dir, "images", "carta_ao_contrario.png"))
         image = image.resize((90, 120), Image.Resampling.LANCZOS)
         self.card_image = ImageTk.PhotoImage(image)
 
@@ -39,7 +42,7 @@ class ReiNosCantosApp:
     def show_welcome_screen(self):
         self.clear_screen()
 
-        logo_image_path = "/home/bridge/Rei-nos-Cantos/images/logo.png"
+        logo_image_path = os.path.join(self.base_dir, "images", "logo.png")
         logo_image = Image.open(logo_image_path)
         logo_image = logo_image.resize((700, 700), Image.Resampling.LANCZOS)
         self.logo_photo = ImageTk.PhotoImage(logo_image)
@@ -117,7 +120,7 @@ class ReiNosCantosApp:
             card_image = self.card_images[random_cards_table[i]]
 
             if direction in ['Leste', 'Oeste']:
-                pil_image = Image.open(f"/home/bridge/Rei-nos-Cantos/images/cartas/{random_cards_table[i]}.png")
+                pil_image = Image.open(os.path.join(self.base_dir, "images", "cartas", f"{random_cards_table[i]}.png"))
                 pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
                 rotated_image = pil_image.rotate(90, expand=True)
                 card_image = ImageTk.PhotoImage(rotated_image)
@@ -164,5 +167,5 @@ class ReiNosCantosApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = ReiNosCantosApp(root)
+    app = PlayerInterface(root)
     root.mainloop()
