@@ -77,9 +77,9 @@ class PlayerInterface:
     def update_player_turn_label(self, action):
         if action == "start":
             self.player_turn_label.config(text=f"{self.player_name}, compre uma carta")
-        elif action == "buy_card":
-            self.player_turn_label.config(text=f"{self.player_name}, coloque uma carta na mesa ou passe a vez")
-        elif action == "place_card" or action == "pass_turn" or action=="place_king":
+        elif action == "buy_card" or action == "place_card" or action=="place_king" or action=="move_card":
+            self.player_turn_label.config(text=f"{self.player_name}, sua vez de jogar")
+        elif action == "pass_turn":
             self.player_turn_label.config(text=f"{self.player_name}, compre uma carta")
 
     def create_game_widgets(self):
@@ -102,10 +102,10 @@ class PlayerInterface:
         self.place_king_button = tk.Button(self.center_frame, text="Colocar Rei no Canto", command=self.place_king, bg="#f81313")
         self.place_king_button.grid(row=5, column=1, pady=10, padx=(0, 10))
 
-        self.move_card_button = tk.Button(self.center_frame, text="Mover Carta na Mão", command=self.move_card, bg="#f81313")
+        self.move_card_button = tk.Button(self.center_frame, text="Manipular Cartas", command=self.move_card, bg="#f81313")
         self.move_card_button.grid(row=5, column=2, pady=10, padx=(0, 10))
 
-        self.move_card_button = tk.Button(self.center_frame, text="Passar a vez", command=self.pass_turn, bg="#f81313")
+        self.move_card_button = tk.Button(self.center_frame, text="Passar a Vez", command=self.pass_turn, bg="#f81313")
         self.move_card_button.grid(row=5, column=3, pady=10, padx=(0, 10))
 
         self.give_up_button = tk.Button(self.center_frame, text="Desistir da Partida", command=self.show_welcome_screen, bg="#f81313")
@@ -150,7 +150,7 @@ class PlayerInterface:
         self.update_player_turn_label("place_card")
 
     def move_card(self):
-        messagebox.showinfo("Ação", "Você moveu uma carta!")
+        messagebox.showinfo("Ação", "Você manipulou uma carta!")
 
     def place_king(self):
         messagebox.showinfo("Ação", "Você colocou um Rei em um canto!")
