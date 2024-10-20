@@ -72,14 +72,6 @@ class PlayerInterface(DogPlayerInterface):
             messagebox.showinfo(message=message)
             self.start_game()
 
-    def start_game(self):
-        self.clear_screen()
-        self.player_turn_label = tk.Label(self.center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
-        self.player_turn_label.grid(row=0, column=0, pady=10)
-        self.update_player_turn_label("start")
-
-        self.create_game_widgets()
-
     def update_player_turn_label(self, action):
         if action == "start":
             self.player_turn_label.config(text=f"{self.player_name}, compre uma carta")
@@ -170,6 +162,22 @@ class PlayerInterface(DogPlayerInterface):
         """Remove todos os widgets da tela atual."""
         for widget in self.center_frame.winfo_children():
             widget.destroy()
+
+    def start_game(self):
+        start_status = self.dog_server_interface.start_match(2)
+        message = start_status.get_message()
+        messagebox.showinfo(message=message)
+        self.clear_screen()
+        self.player_turn_label = tk.Label(self.center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
+        self.player_turn_label.grid(row=0, column=0, pady=10)
+        self.update_player_turn_label("start")
+
+        self.create_game_widgets()
+
+    def receive_start(self, start_status):
+        message = start_status.get_message()
+        messagebox.showinfo(message=message)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
