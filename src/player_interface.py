@@ -60,8 +60,12 @@ class PlayerInterface(DogPlayerInterface):
         self.name_entry = tk.Entry(self.center_frame)
         self.name_entry.grid(row=2, column=0)
 
-        self.start_button = tk.Button(self.center_frame, text="Iniciar Jogo", command=self.confirm_name, bg='#f81313', width=20, height=2)
-        self.start_button.grid(row=3, column=0, columnspan=2, pady=(40, 50))
+        self.connect_to_dog = tk.Button(self.center_frame, text="Conectar ao Servidor", command=self.confirm_name, bg='#f81313', width=20, height=2)
+        self.connect_to_dog.grid(row=3, column=0, columnspan=1, pady=(40, 50))
+
+
+        self.start_button = tk.Button(self.center_frame, text="Iniciar Jogo", command=self.start_game, bg='#f81313', width=20, height=2)
+        self.start_button.grid(row=4, column=0, columnspan=2, pady=(40, 50))
 
     def confirm_name(self):
         self.player_name = self.name_entry.get()
@@ -70,7 +74,6 @@ class PlayerInterface(DogPlayerInterface):
         else:
             message = self.dog_server_interface.initialize(self.player_name, self)
             messagebox.showinfo(message=message)
-            self.start_game()
 
     def update_player_turn_label(self, action):
         if action == "start":
@@ -171,13 +174,16 @@ class PlayerInterface(DogPlayerInterface):
         self.player_turn_label = tk.Label(self.center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
         self.player_turn_label.grid(row=0, column=0, pady=10)
         self.update_player_turn_label("start")
-
         self.create_game_widgets()
 
     def receive_start(self, start_status):
         message = start_status.get_message()
         messagebox.showinfo(message=message)
-
+        self.clear_screen()
+        self.player_turn_label = tk.Label(self.center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
+        self.player_turn_label.grid(row=0, column=0, pady=10)
+        self.update_player_turn_label("start")
+        self.create_game_widgets()
 
 if __name__ == "__main__":
     root = tk.Tk()
