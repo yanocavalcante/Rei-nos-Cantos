@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk  # type: ignore
+from dog.dog_interface import DogPlayerInterface
+from dog.dog_actor import DogActor
 import os
 
-class PlayerInterface:
+class PlayerInterface(DogPlayerInterface):
     def __init__(self, root):
         self.root = root
         self.root.title("Rei nos Cantos")
@@ -16,6 +18,8 @@ class PlayerInterface:
         self.center_frame.pack(expand=True)  
 
         self.card_images = self.load_card_images()
+
+        self.dog_server_interface = DogActor()
         
         self.show_welcome_screen()
 
@@ -64,6 +68,8 @@ class PlayerInterface:
         if not self.player_name:
             messagebox.showwarning("Atenção", "Por favor, insira seu nome.")
         else:
+            message = self.dog_server_interface.initialize(self.player_name, self)
+            messagebox.showinfo(message=message)
             self.start_game()
 
     def start_game(self):
