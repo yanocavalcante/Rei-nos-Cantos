@@ -1,6 +1,6 @@
 # Início
 
-Projeto da disciplina de Engenharia de Software I - INE5417, para desenvolvimento de um jogo de cartas chamado Rei nos Cantos, utilizando linguagem de programação Python.
+Projeto de disciplina de Engenharia de Software I - INE5417, para desenvolvimento de um jogo de cartas chamado Rei nos Cantos, utilizando linguagem de programação Python.
 
 # Build
 <em>Esse tutorial considera a utilização de um sistema operacional baseado em Linux</em><br>
