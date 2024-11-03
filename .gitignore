@@ -1,3 +1,4 @@
 *.bak
 ReiNCnts.vpp.*
 venv/
+__pycache__/
