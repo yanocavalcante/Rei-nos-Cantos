@@ -1,8 +1,11 @@
+from .baralho import Baralho
+
+
 class Pilha:
-    def __init__(self, cartas, eh_canto):
+    def __init__(self):
         pass
 
-    def verifica_colocacao_carta(self, carta: Carta) -> bool:
+    def verifica_colocacao_carta(self, carta) -> bool:
         pass
 
     def verifica_canto(self) -> bool:
@@ -14,3 +17,5 @@ class Pilha:
     def retirar_cartas_pilha(self, lista_cartas: list):
         pass
 
+    def instancia_baralho(self):
+        Baralho()

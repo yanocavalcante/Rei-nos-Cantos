@@ -1,6 +1,10 @@
+from .jogador import Jogador
+
+
 class Rodada:
-    def __init__(self, jogador: Jogador, comprou_carta: bool = False):
-        pass
+    def __init__(self):
+        jogador_local = Jogador()
+        jogador_remoto = Jogador()
 
     def comparar_jogador(self, jogador: Jogador) -> bool:
         pass

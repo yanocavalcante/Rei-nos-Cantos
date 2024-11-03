@@ -1,6 +1,11 @@
+from .rodada import Rodada
+from .mesa import Mesa
+
 class Partida:
-    def __init__(self, jogador_local: Jogador, jogador_remoto: Jogador, mesa: Mesa, rodada_atual: Rodada):
-        pass
+    def __init__(self):
+        print("Instanciou Partida")
+        rodada_atual = Rodada()
+        mesa = Mesa()
 
     def abandonar_partida(self):
         pass
@@ -23,7 +28,7 @@ class Partida:
     def passar_a_vez(self):
         pass
 
-    def pegar_jog_contrario(self, jogador: Jogador) -> Jogador:
+    def pegar_jog_contrario(self, jogador):
         pass
 
     def desistir(self):

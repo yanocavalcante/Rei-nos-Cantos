@@ -1,14 +1,20 @@
+from .pilha import Pilha
+
+
 class Mesa:
-    def __init__(self, pilhas: list, monte: Pilha):
-        pass
+    def __init__(self):
+        print("Instanciou Mesa")
+        self._pilhas = [Pilha() for _ in range(8)]
+        self._monte = Pilha()
+        self._monte.instancia_baralho()
 
     def limpar_mesa(self):
         pass
 
-    def remover_carta_monte(self, carta: Carta):
+    def remover_carta_monte(self, carta):
         pass
 
-    def comprar_carta_monte(self) -> Carta:
+    def comprar_carta_monte(self):
         pass
 
     def embaralhar_monte(self, lista_cartas: list) -> list:
