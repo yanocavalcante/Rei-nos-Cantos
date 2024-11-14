@@ -69,4 +69,6 @@ class Partida:
 
     def get_encerrou(self) -> bool:
         pass
-
+    
+    def instanciar_baralho(self):
+        pass

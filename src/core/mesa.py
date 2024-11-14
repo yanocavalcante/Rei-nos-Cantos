@@ -6,7 +6,6 @@ class Mesa:
         print("Instanciou Mesa")
         self._pilhas = [Pilha() for _ in range(8)]
         self._monte = Pilha()
-        self._monte.instancia_baralho()
 
     def limpar_mesa(self):
         pass
@@ -22,4 +21,6 @@ class Mesa:
 
     def colocar_cartas_mesa(self, lista_cartas: list) -> list:
         pass
-
+    
+    def instanciar_baralho(self):
+        pass
