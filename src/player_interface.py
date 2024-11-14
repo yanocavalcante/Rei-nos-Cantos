@@ -179,6 +179,7 @@ class PlayerInterface(DogPlayerInterface):
         self.player_turn_label.grid(row=0, column=0, pady=10)
         self.update_player_turn_label("start")
         self.create_game_widgets()
+        print("DEBUGGING:", start_status, message)
 
     def receive_start(self, start_status):
         message = start_status.get_message()

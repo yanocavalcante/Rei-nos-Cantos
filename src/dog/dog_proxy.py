@@ -27,12 +27,12 @@ class DogProxy:
         if self.player_name == "":
             self.player_name = "player" + str(self.player_id)
         try:
-            config_file = open("config/game.id", "r")
-            self.game_id = config_file.read()
+            with open("config/gameid.txt", 'r', encoding='utf-8') as config_file:
+                self.game_id = config_file.read()
         except FileNotFoundError:
-            self.status = 0
-            return "Arquivo de configuração do jogo não encontrado"
-        config_file.close()
+            return("Atualizar caminho do arquivo de configuração do Jogo!")
+        except Exception as e:
+            return(f"Ocorreu um erro: {e}")
         resp = self.register_player(self.player_name, self.player_id, self.game_id)
         result = resp.status_code
         if result == 200:
