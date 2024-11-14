@@ -3,8 +3,7 @@ from .jogador import Jogador
 
 class Rodada:
     def __init__(self):
-        jogador_local = Jogador()
-        jogador_remoto = Jogador()
+        jogador = Jogador()
 
     def comparar_jogador(self, jogador: Jogador) -> bool:
         pass
