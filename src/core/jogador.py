@@ -1,5 +1,5 @@
 class Jogador:
-    def __init__(self, cartas: list, nome: str, id: str, venceu_partida = False, sua_vez = False):
+    def __init__(self):
         pass
 
     def reset(self):
@@ -11,10 +11,10 @@ class Jogador:
     def troca_turno(self):
         pass
 
-    def adicionar_noca_carta(self, carta: Carta):
+    def adicionar_noca_carta(self, carta):
         pass
 
-    def sem_cartas(self) -> boolean:
+    def sem_cartas(self) -> bool:
         pass
 
     def distribuir_cartas(self, lista_cartas: list) -> list: 

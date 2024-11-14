@@ -1,5 +1,5 @@
 class Carta:
-    def __init__(self, naipe: Naipe, numero: int):
+    def __init__(self, naipe, numero: int):
         pass
 
     def verificar_rei(self) -> bool:

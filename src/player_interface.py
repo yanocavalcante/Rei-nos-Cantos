@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk  # type: ignore
+import os
+
 from dog.dog_interface import DogPlayerInterface
 from dog.dog_actor import DogActor
-import os
+from core.partida import Partida
 
 class PlayerInterface(DogPlayerInterface):
     def __init__(self, root):
@@ -20,6 +22,8 @@ class PlayerInterface(DogPlayerInterface):
         self.card_images = self.load_card_images()
 
         self.dog_server_interface = DogActor()
+        
+        self._partida = Partida()
         
         self.show_welcome_screen()
 
