@@ -1,6 +1,3 @@
-from .baralho import Baralho
-
-
 class Pilha:
     def __init__(self):
         pass
@@ -16,6 +13,3 @@ class Pilha:
 
     def retirar_cartas_pilha(self, lista_cartas: list):
         pass
-
-    def instancia_baralho(self):
-        Baralho()
