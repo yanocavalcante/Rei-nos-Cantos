@@ -1,11 +1,14 @@
 from .rodada import Rodada
 from .mesa import Mesa
+from .jogador import Jogador
 
 class Partida:
     def __init__(self):
         print("Instanciou Partida")
         rodada_atual = Rodada()
         mesa = Mesa()
+        jogador_remoto = Jogador()
+        jogador_local = Jogador()
 
     def abandonar_partida(self):
         pass
