@@ -171,15 +171,27 @@ class PlayerInterface(DogPlayerInterface):
             widget.destroy()
 
     def start_game(self):
-        start_status = self.dog_server_interface.start_match(2)
-        message = start_status.get_message()
-        messagebox.showinfo(message=message)
-        self.clear_screen()
-        self.player_turn_label = tk.Label(self.center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
-        self.player_turn_label.grid(row=0, column=0, pady=10)
-        self.update_player_turn_label("start")
-        self.create_game_widgets()
-        print("DEBUGGING:", start_status, message)
+        print("Clicou no Botão Iniciar Jogo")
+        if self._partida.get_encerrou() == False:
+            start_status = self.dog_server_interface.start_match(2)
+
+            if start_status.get_code() == "1" or start_status.get_code() == "0":
+                message = start_status.get_message()
+            
+            else: 
+                message = start_status.get_message()
+                messagebox.showinfo(message=message)
+
+                self.clear_screen()
+                self.player_turn_label = tk.Label(self.center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
+                self.player_turn_label.grid(row=0, column=0, pady=10)
+                self.update_player_turn_label("start")
+                self.create_game_widgets()
+
+                jogadores = start_status.get_players()
+                jogada = self._partida.comecar_partida(jogadores)
+                self.dog_server_interface.send_move(jogada)
+                # status_jogo = self._partida.obtem_status()    #Não sei pra que serve
 
     def receive_start(self, start_status):
         message = start_status.get_message()
