@@ -5,10 +5,11 @@ from .jogador import Jogador
 class Partida:
     def __init__(self):
         print("Instanciou Partida")
-        rodada_atual = Rodada()
-        mesa = Mesa()
-        jogador_remoto = Jogador()
-        jogador_local = Jogador()
+        self._rodada_atual = Rodada()
+        self._mesa = Mesa()
+        self._jogador_remoto = Jogador()
+        self._jogador_local = Jogador()
+        self._partida_em_andamento = False
 
     def abandonar_partida(self):
         pass
@@ -38,7 +39,38 @@ class Partida:
         pass
 
     def comecar_partida(self, jogadores: list):
-        pass
+        pilhas_mesa = self._mesa.get_pilhas()
+
+        self._jogador_local.reset()
+        self._jogador_local.inicializar(jogadores[0][1])
+
+        self._jogador_remoto.reset()
+        self._jogador_remoto.inicializar(jogadores[1][1])
+
+        self._rodada_atual.set_jogador(self._jogador_local)
+        self.instanciar_baralho()
+        self.set_partida_em_andamento()
+
+        inicio = {
+            'tipo_jogada': "inicio",
+            'pilha_adiciona': None,
+            'pilha_remove': None,
+            'carta': None,
+            'cartas_monte': self._mesa.get_monte(),
+            'cartas_pilha_0': pilhas_mesa[0].get_codigo_cartas(),
+            'cartas_pilha_1': pilhas_mesa[1].get_codigo_cartas(),
+            'cartas_pilha_2': pilhas_mesa[2].get_codigo_cartas(),
+            'cartas_pilha_3': pilhas_mesa[3].get_codigo_cartas(),
+            'cartas_canto_0': None,
+            'cartas_canto_1': None,
+            'cartas_canto_2': None,
+            'cartas_canto_3': None,
+            'cartas_jogador_local': self._jogador_local.get_codigos_mao(),
+            'cartas_jogador_remoto': self._jogador_remoto.get_codigos_mao(),
+            'match_status': None
+        }
+
+        return inicio
 
     def avaliar_vencedor(self) -> bool:
         pass
@@ -64,11 +96,14 @@ class Partida:
     def obter_jogada(self, jogada: dict):
         pass
 
-    def encerrar_partida(self):
-        pass
+    def set_partida_em_andamento(self):
+        if self._partida_em_andamento == True:
+            self._partida_em_andamento = False
+        elif self._partida_em_andamento == False:
+            self._partida_em_andamento = True
 
-    def get_encerrou(self) -> bool:
-        pass
+    def get_partida_em_andamento(self) -> bool:
+        return self._partida_em_andamento
     
     def instanciar_baralho(self):
-        pass
+        self._mesa.instanciar_baralho()
