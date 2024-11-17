@@ -1,7 +1,7 @@
 class Carta:
-    def __init__(self, naipe, numero: int):
-        self._naipe = naipe
+    def __init__(self, numero: int, naipe):
         self._numero = numero
+        self._naipe = naipe
         self.gera_codigo()
 
     def verificar_rei(self) -> bool:
@@ -20,5 +20,5 @@ class Carta:
         return self._naipe
     
     def gera_codigo(self):
-        self._codigo = self._naipe.name[0]+self._numero
+        self._codigo = self._naipe.name[0]+str(self._numero)
 
