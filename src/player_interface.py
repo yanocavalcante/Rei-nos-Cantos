@@ -172,7 +172,7 @@ class PlayerInterface(DogPlayerInterface):
 
     def start_game(self):
         print("Clicou no Botão Iniciar Jogo")
-        if self._partida.get_encerrou() == False:
+        if self._partida.get_partida_em_andamento() == False:
             start_status = self.dog_server_interface.start_match(2)
 
             if start_status.get_code() == "1" or start_status.get_code() == "0":
