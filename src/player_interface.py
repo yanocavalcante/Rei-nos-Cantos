@@ -194,6 +194,9 @@ class PlayerInterface(DogPlayerInterface):
                 # status_jogo = self._partida.obtem_status()    #Não sei pra que serve
 
     def receive_start(self, start_status):
+        jogadores = start_status.get_players()
+        self._partida.receive_start(jogadores)
+
         message = start_status.get_message()
         messagebox.showinfo(message=message)
         self.clear_screen()
@@ -201,6 +204,8 @@ class PlayerInterface(DogPlayerInterface):
         self.player_turn_label.grid(row=0, column=0, pady=10)
         self.update_player_turn_label("start")
         self.create_game_widgets()
+
+        # status_jogo = self._partida.obtem_status()    #Continuo sem saber pra que serve
 
 if __name__ == "__main__":
     root = tk.Tk()
