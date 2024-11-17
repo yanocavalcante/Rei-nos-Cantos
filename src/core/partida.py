@@ -56,7 +56,7 @@ class Partida:
             'pilha_adiciona': None,
             'pilha_remove': None,
             'carta': None,
-            'cartas_monte': self._mesa.get_monte(),
+            'cartas_monte': self._mesa.get_monte().get_codigo_cartas(),
             'cartas_pilha_0': pilhas_mesa[0].get_codigo_cartas(),
             'cartas_pilha_1': pilhas_mesa[1].get_codigo_cartas(),
             'cartas_pilha_2': pilhas_mesa[2].get_codigo_cartas(),
