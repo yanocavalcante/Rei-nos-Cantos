@@ -20,5 +20,5 @@ class Baralho:
             self._cartas.extend([ouro, copa, pau, espada])
 
     def get_cartas(self) -> list[Carta]:
-        pass
+        return self._cartas
 

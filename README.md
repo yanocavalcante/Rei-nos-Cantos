@@ -18,3 +18,12 @@ Com o ambiente virtual criado e ativado, agora é preciso instalar os pacotes e 
 ```bash
 $ pip install -r requirements.txt
 ```
+
+# Troubleshooting
+```bash
+ModuleNotFoundError: No module named 'tkinter'
+```
+É possível que, caso você tente iniciar o jogo usando uma distribuição Linux, o sistema aponte para a inexistência do módulo Tkinter.<br> Este é um problema conhecido que pode afetar diversos projetos que dependem de componentes do Tkinter, principalmente porque algumas instalações de Linux podem deliberadamente retirar alguns pacotes/componentes do Python, sendo um deles o TK.
+Caso isso aconteça com você, sugerimos, seguir as instruções presentes em: <br>
+<a href="https://stackoverflow.com/a/76105219">Stackoveflow - Why does tkinter seems to be missing</a><br>
+<a href="https://tkdocs.com/tutorial/install.html">TkDocs - Installing Tk</a>

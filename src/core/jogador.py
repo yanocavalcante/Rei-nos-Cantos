@@ -1,17 +1,17 @@
 class Jogador:
     def __init__(self):
-        pass
+        self._cartas =[]
 
     def reset(self):
         pass
 
-    def inicializar(self, id_jog): #Não entendi a funcionalidade dessa func. Porque o primeiro param eh um id que jah temos?
+    def inicializar(self, id_jog):
         pass
 
     def troca_turno(self):
         pass
 
-    def adicionar_noca_carta(self, carta):
+    def adicionar_nova_carta(self, carta):
         pass
 
     def sem_cartas(self) -> bool:
@@ -25,4 +25,10 @@ class Jogador:
         pass
 
     def get_mao(self) -> list:
-        pass
+        return self._cartas
+    
+    def get_codigos_mao(self) -> list:
+        lista_codigos = []
+        for carta in self._cartas:
+            lista_codigos.append(carta.get_codigo())
+        return lista_codigos
