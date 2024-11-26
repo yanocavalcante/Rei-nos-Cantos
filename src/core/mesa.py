@@ -27,8 +27,9 @@ class Mesa:
     def embaralhar_monte(self) -> list:
         cartas_do_baralho = self._baralho.get_cartas()
         random.shuffle(cartas_do_baralho)
-        cartas_do_monte = cartas_do_baralho[:32]
-        cartas_restantes = cartas_do_baralho[32:]
+        cartas_do_monte = cartas_do_baralho[:34]
+        print("Cartas do Monte:", len(cartas_do_monte))
+        cartas_restantes = cartas_do_baralho[34:]
         for carta in cartas_do_monte:
             self._monte.adicionar_cartas_pilha(carta)
         return cartas_restantes
@@ -43,6 +44,7 @@ class Mesa:
     
     def instanciar_baralho(self):
         self._baralho = Baralho()
+        self.embaralhar_monte()
 
     def distribuir_cartas_jogador(self, lista_cartas: list, jogador) -> list:
         for i in range(7):
