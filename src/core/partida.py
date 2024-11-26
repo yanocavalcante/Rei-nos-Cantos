@@ -54,7 +54,12 @@ class Partida:
         self._jogador_remoto.inicializar(jogadores[1][1])
 
         self._rodada_atual.set_jogador(self._jogador_local)
-        self.instanciar_baralho()
+        cartas_restantes = self.instanciar_baralho()
+
+        cartas_jogadores = self._mesa.colocar_cartas_mesa(cartas_restantes)
+
+        self._mesa.distribuir_cartas_jogador(cartas_jogadores[:7], self._jogador_remoto)
+        self._mesa.distribuir_cartas_jogador(cartas_jogadores[7:], self._jogador_local)
         self.set_partida_em_andamento()
 
         inicio = {
