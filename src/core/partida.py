@@ -18,7 +18,13 @@ class Partida:
         pass
 
     def receive_start(self, jogadores: list):
-        pass
+        self._jogador_local.reset()
+        id_jog = jogadores[1][1]
+        self._jogador_local.inicializar(id_jog)
+        self._jogador_remoto.reset()
+        id_jog = jogadores[0][0]
+        self._jogador_remoto.inicializar(id_jog)
+        self._rodada_atual.set_jogador(self._jogador_remoto)
 
     def obter_status_partida(self) -> str:
         pass
