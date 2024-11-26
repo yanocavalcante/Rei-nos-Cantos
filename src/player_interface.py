@@ -65,11 +65,11 @@ class PlayerInterface(DogPlayerInterface):
         self.name_entry.grid(row=2, column=0)
 
         self.connect_to_dog = tk.Button(self._center_frame, text="Conectar ao Servidor", command=self.confirm_name, bg='#f81313', width=20, height=2)
-        self.connect_to_dog.grid(row=3, column=0, columnspan=1, pady=(40, 50))
+        self.connect_to_dog.grid(row=3, column=0, columnspan=1, pady=(10, 10))
 
 
         self.start_button = tk.Button(self._center_frame, text="Iniciar Jogo", command=self.start_game, bg='#f81313', width=20, height=2)
-        self.start_button.grid(row=4, column=0, columnspan=2, pady=(40, 50))
+        self.start_button.grid(row=4, column=0, columnspan=2, pady=(10, 10))
 
     def confirm_name(self):
         self.player_name = self.name_entry.get()
