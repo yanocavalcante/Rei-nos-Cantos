@@ -207,6 +207,11 @@ class PlayerInterface(DogPlayerInterface):
 
         # status_jogo = self._partida.obtem_status()    #Continuo sem saber pra que serve
 
+    def receber_notificacao_de_abandono(self):
+        self._partida.set_partida_em_andamento
+        messagebox.showinfo("Ação", "O seu oponente desistiu da partida")
+        self._root.destroy()
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = PlayerInterface(root)
