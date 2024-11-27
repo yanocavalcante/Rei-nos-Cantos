@@ -113,7 +113,7 @@ class PlayerInterface(DogPlayerInterface):
         self.move_card_button = tk.Button(self._center_frame, text="Passar a Vez", command=self.pass_turn, bg="#f81313")
         self.move_card_button.grid(row=5, column=3, pady=10, padx=(0, 10))
 
-        self.give_up_button = tk.Button(self._center_frame, text="Desistir da Partida", command=self.receber_notificacao_de_abandono, bg="#f81313")
+        self.give_up_button = tk.Button(self._center_frame, text="Desistir da Partida", command=self.show_welcome_screen, bg="#f81313")
         self.give_up_button.grid(row=5, column=4, pady=10)
 
     def place_initial_cards(self):
