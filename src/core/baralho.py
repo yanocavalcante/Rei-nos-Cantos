@@ -9,7 +9,6 @@ class Baralho:
         print("Instanciou Baralho")
         self._cartas = []
         self.reiniciar_baralho()
-        print(self._cartas)
 
     def reiniciar_baralho(self):
         for numero in range(1,14):
