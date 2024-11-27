@@ -83,7 +83,6 @@ class Partida:
             'match_status': "next",
             'venceu': "false"
         }
-        print(self._mesa._baralho._cartas)
         return inicio
 
     def avaliar_vencedor(self) -> bool:
@@ -99,8 +98,8 @@ class Partida:
             'match_status': "next",
             'venceu': "false"
         }
-
         return mover
+
     def jogar_carta(self):
         pass
 
@@ -112,7 +111,6 @@ class Partida:
 
     def receber_jogada(self, jogada):
         if jogada['tipo_jogada'] == 'inicio':
-            print("EH INICIO")
             self.instanciar_baralho()
             self._mesa.get_pilha_codigo('M').adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas_monte']))
             self._mesa.get_pilha_codigo('0').adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas_pilha_0']))
