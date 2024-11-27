@@ -11,8 +11,9 @@ class Jogador:
     def troca_turno(self):
         pass
 
-    def adicionar_nova_carta(self, carta):
-        pass
+    def adicionar_cartas(self, cartas: list):
+        for carta in cartas:
+            self._cartas.append(carta)
 
     def sem_cartas(self) -> bool:
         pass
