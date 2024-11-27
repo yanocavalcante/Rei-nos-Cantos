@@ -31,20 +31,19 @@ class Mesa:
         print("Cartas do Monte:", len(cartas_do_monte))
         cartas_restantes = cartas_do_baralho[34:]
         for carta in cartas_do_monte:
-            self._monte.adicionar_cartas_pilha(carta)
+            self._monte.adicionar_cartas_pilha([carta])
         return cartas_restantes
 
     def colocar_cartas_mesa(self, lista_cartas: list) -> list:
         count = 0
         for pilha in self._pilhas:
             if count == 4:
-                return
+                return lista_cartas
             pilha.adicionar_cartas_pilha([lista_cartas.pop(0)])
             count += 1
     
     def instanciar_baralho(self):
         self._baralho = Baralho()
-        self.embaralhar_monte()
 
     def distribuir_cartas_jogador(self, lista_cartas: list, jogador) -> list:
         for i in range(7):
@@ -56,3 +55,17 @@ class Mesa:
     
     def get_pilhas(self) -> list:
         return self._pilhas
+    
+    def get_pilha_codigo(self, codp) -> Pilha:      #Retorna uma instância de pilha baseada no código fornecido
+        for pilha in self._pilhas:
+            if pilha._codigo_pilha == codp:
+                return pilha
+    
+    def get_baralho(self) -> list:
+        return self._baralho
+
+    def get_cartas_codigo(self, lista_codc) -> list:
+        lista_cartas = []
+        for codc in lista_codc:
+            lista_cartas.append(self._baralho.get_carta_codigo(codc))
+        return lista_cartas
