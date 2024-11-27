@@ -54,7 +54,9 @@ class Partida:
         self._jogador_remoto.inicializar(jogadores[1][1])
 
         self._rodada_atual.set_jogador(self._jogador_local)
-        cartas_restantes = self.instanciar_baralho()
+        
+        self.instanciar_baralho()
+        cartas_restantes = self._mesa.embaralhar_monte()
 
         cartas_jogadores = self._mesa.colocar_cartas_mesa(cartas_restantes)
 
@@ -78,17 +80,27 @@ class Partida:
             'cartas_canto_3': None,
             'cartas_jogador_local': self._jogador_local.get_codigos_mao(),
             'cartas_jogador_remoto': self._jogador_remoto.get_codigos_mao(),
-            'match_status': None
+            'match_status': "next",
+            'venceu': "false"
         }
-
+        print(self._mesa._baralho._cartas)
         return inicio
 
     def avaliar_vencedor(self) -> bool:
         pass
 
     def mover_cartas(self):
-        pass
+        pilhas_mesa = self._mesa.get_pilhas()
+        mover = {
+            'tipo_jogada': "mover",
+            'pilha_adiciona': None,
+            'pilha_remove': None,
+            'cartas': None,
+            'match_status': "next",
+            'venceu': "false"
+        }
 
+        return mover
     def jogar_carta(self):
         pass
 
@@ -98,13 +110,33 @@ class Partida:
     def colocar_rei(self):
         pass
 
-    def receber_jogada(self):
+    def receber_jogada(self, jogada):
+        if jogada['tipo_jogada'] == 'inicio':
+            print("EH INICIO")
+            self.instanciar_baralho()
+            self._mesa.get_pilha_codigo('M').adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas_monte']))
+            self._mesa.get_pilha_codigo('0').adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas_pilha_0']))
+            self._mesa.get_pilha_codigo('1').adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas_pilha_1']))
+            self._mesa.get_pilha_codigo('2').adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas_pilha_2']))            
+            self._mesa.get_pilha_codigo('3').adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas_pilha_3']))
+            self._jogador_local.adicionar_cartas(self._mesa.get_cartas_codigo(jogada['cartas_jogador_remoto']))
+            self._jogador_remoto.adicionar_cartas(self._mesa.get_cartas_codigo(jogada['cartas_jogador_local']))   #Lembrar que os pontos de vista sempre se invertem
+        else:
+            if jogada['tipo_jogada'] == 'mover':
+                self._mesa_get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
+                self._mesa_get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
+            elif jogada['tipo_jogada'] == 'rei_no_canto' or jogada['tipo_jogada'] == 'jogar':
+                self._mesa_get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
+            elif jogada['tipo_jogada'] == 'passar':
+                nova_rodada = Rodada()
+                self.set_rodada_atual(nova_rodada)
+            elif jogada['tipo_jogada'] == 'desistir':
+                pass
+
+    def verificar_inicio(self) -> bool:     #APAGAR NO DIAGRAMA
         pass
 
-    def verificar_inicio(self) -> bool:
-        pass
-
-    def obter_jogada(self, jogada: dict):
+    def obter_jogada(self, jogada: dict):   #APAGAR NO DIAGRAMA
         pass
 
     def set_partida_em_andamento(self):
@@ -117,4 +149,7 @@ class Partida:
         return self._partida_em_andamento
     
     def instanciar_baralho(self):
-        self._mesa.instanciar_baralho()
+        return self._mesa.instanciar_baralho()
+
+    def set_rodada_atual(self, rodada):
+        self._rodada_atual = rodada
