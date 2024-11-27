@@ -27,3 +27,6 @@ class Pilha:
         for carta in self._cartas:
             lista_codigos.append(carta.get_codigo())
         return lista_codigos
+    
+    def get_codigo(self):
+        return self._codigo_pilha
