@@ -113,7 +113,7 @@ class PlayerInterface(DogPlayerInterface):
         self.move_card_button = tk.Button(self._center_frame, text="Passar a Vez", command=self.pass_turn, bg="#f81313")
         self.move_card_button.grid(row=5, column=3, pady=10, padx=(0, 10))
 
-        self.give_up_button = tk.Button(self._center_frame, text="Desistir da Partida", command=self.show_welcome_screen, bg="#f81313")
+        self.give_up_button = tk.Button(self._center_frame, text="Desistir da Partida", command=self.receber_notificacao_de_abandono, bg="#f81313")
         self.give_up_button.grid(row=5, column=4, pady=10)
 
     def place_initial_cards(self):
@@ -206,6 +206,11 @@ class PlayerInterface(DogPlayerInterface):
         self.create_game_widgets()
 
         # status_jogo = self._partida.obtem_status()    #Continuo sem saber pra que serve
+
+    def receber_notificacao_de_abandono(self):
+        self._partida.set_partida_em_andamento
+        messagebox.showinfo("Ação", "O seu oponente desistiu da partida")
+        self._root.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()
