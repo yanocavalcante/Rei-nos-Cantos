@@ -155,16 +155,21 @@ class PlayerInterface(DogPlayerInterface):
         cartas_mao_jogador = self._partida._jogador_local._cartas
         nome_png_cartas_jogador = self.get_codigo_cartas(cartas_mao_jogador)
 
+        if hasattr(self, 'player_hand_frame'):
+            self.player_hand_frame.destroy() 
+
         self.player_hand_frame = tk.Frame(self._center_frame, bg='darkgreen')  
         self.player_hand_frame.grid(row=6, column=0, columnspan=4, pady=20)
 
         for card in nome_png_cartas_jogador:
             card_image = self._card_images[card]
             label = tk.Label(self.player_hand_frame, image=card_image, bg='white')  
+            label.carta_nome = card 
             label.pack(side=tk.LEFT, padx=5, pady=5)
+
     
     def buy_card(self):
-        self.update_player_turn_label("sua vez de jogar")
+        self.update_player_turn_label("é sua vez de jogar")
         dicionario, compra = self._partida.comprar_carta()
         messagebox.showinfo("Ação", dicionario['mensagem'])
         self.atualizar_mao()
@@ -207,8 +212,9 @@ class PlayerInterface(DogPlayerInterface):
 
         return self.pilha_selecionada.get()
     def place_card(self):
-        messagebox.showinfo("Ação", "Você colocou uma carta na mesa!")
-        self.update_player_turn_label("é sua vez de jogar")
+        self.update_player_turn_label("selecione uma carta para jogar na mesa")
+        carta_selecionada = self.selecionar_carta_mao()
+        self.update_player_turn_label("selecione uma pilha de destino")
 
     def move_card(self):
         cartas = self.selecionar_cartas_mesa()
