@@ -79,13 +79,9 @@ class PlayerInterface(DogPlayerInterface):
             message = self._dog_server_interface.initialize(self.player_name, self)
             messagebox.showinfo(message=message)
 
-    def update_player_turn_label(self, action):
-        if action == "start":
-            self.player_turn_label.config(text=f"{self.player_name}, compre uma carta")
-        elif action == "buy_card" or action == "place_card" or action=="place_king" or action=="move_card":
-            self.player_turn_label.config(text=f"{self.player_name}, sua vez de jogar")
-        elif action == "pass_turn":
-            self.player_turn_label.config(text=f"{self.player_name}, compre uma carta")
+    def update_player_turn_label(self, message):
+        self.player_turn_label.config(text=f"{self.player_name}, {message}")
+
 
     def create_game_widgets(self):
         self.card_frames = {}
@@ -146,6 +142,9 @@ class PlayerInterface(DogPlayerInterface):
 
             self.card_frames[direction].image = card_image
 
+        self.atualizar_mao()
+
+    def atualizar_mao(self):
         cartas_mao_jogador = self._partida._jogador_local._cartas
         nome_png_cartas_jogador = self.get_codigo_cartas(cartas_mao_jogador)
 
@@ -156,28 +155,29 @@ class PlayerInterface(DogPlayerInterface):
             card_image = self._card_images[card]
             label = tk.Label(self.player_hand_frame, image=card_image, bg='white')  
             label.pack(side=tk.LEFT, padx=5, pady=5)
-
+    
     def buy_card(self):
-        self.update_player_turn_label("buy_card")
+        self.update_player_turn_label("sua vez de jogar")
         dicionario, compra = self._partida.comprar_carta()
         messagebox.showinfo("Ação", dicionario['mensagem'])
+        self.atualizar_mao()
         if compra is not None:
             self._dog_server_interface.send_move(compra)
 
     def place_card(self):
         messagebox.showinfo("Ação", "Você colocou uma carta na mesa!")
-        self.update_player_turn_label("place_card")
+        self.update_player_turn_label("é sua vez de jogar")
 
     def move_card(self):
         messagebox.showinfo("Ação", "Você manipulou uma carta!")
 
     def place_king(self):
         messagebox.showinfo("Ação", "Você colocou um Rei em um canto!")
-        self.update_player_turn_label("place_king")
+        self.update_player_turn_label("é sua vez de jogar")
 
     def pass_turn(self):
         messagebox.showinfo("Ação", "Você passou a vez!")
-        self.update_player_turn_label("pass_turn")
+        self.update_player_turn_label("é a vez do seu oponente jogar")
 
     def clear_screen(self):
         """Remove todos os widgets da tela atual."""
@@ -199,7 +199,7 @@ class PlayerInterface(DogPlayerInterface):
                 self.clear_screen()
                 self.player_turn_label = tk.Label(self._center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
                 self.player_turn_label.grid(row=0, column=0, pady=10)
-                self.update_player_turn_label("start")
+                self.update_player_turn_label("compre uma carta")
 
                 jogadores = start_status.get_players()
                 inicio = self._partida.comecar_partida(jogadores)
@@ -216,7 +216,7 @@ class PlayerInterface(DogPlayerInterface):
         self.clear_screen()
         self.player_turn_label = tk.Label(self._center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
         self.player_turn_label.grid(row=0, column=0, pady=10)
-        self.update_player_turn_label("start")
+        self.update_player_turn_label("é a vez do seu oponente jogar")
 
         # status_jogo = self._partida.obtem_status()    #Continuo sem saber pra que serve
     def receive_move(self, a_move):
