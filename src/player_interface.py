@@ -216,6 +216,10 @@ class PlayerInterface(DogPlayerInterface):
         messagebox.showinfo("Ação", "O seu oponente desistiu da partida")
         self._root.destroy()
 
+    def receive_move(self, a_move):
+        print(a_move)
+        self._partida.receber_jogada(a_move)
+    
 if __name__ == "__main__":
     root = tk.Tk()
     app = PlayerInterface(root)
