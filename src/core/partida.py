@@ -78,16 +78,24 @@ class Partida:
     def avaliar_vencedor(self) -> bool:
         pass
 
-    def mover_cartas(self):
-        pilhas_mesa = self._mesa.get_pilhas()
-        mover = {
-            'tipo_jogada': "mover",
-            'pilha_adiciona': None,
-            'pilha_remove': None,
-            'cartas': None,
-            'match_status': "next",
-        }
-        return mover
+    def mover_cartas(self, cartas, pilha1, pilha2):
+        if self._rodada_atual.comparar_jogador(self._jogador_local):
+            if self._rodada_atual.verificar_compra():
+                if self._mesa.get_pilha_codigo(pilha2).verifica_colocacao_carta(cartas):
+                    mover = {              
+                    'tipo_jogada': "mover",
+                    'cartas': cartas.get_codigo(),
+                    'pilha_remove': pilha1,
+                    'pilha_adiciona': pilha2,
+                    'match_status': 'next',
+                    }
+                    return {"mensagem": "Moveu cartas!", "carta": None }, mover
+                else:
+                    return {"mensagem": "Movimento Inválido!", "carta": None}, None
+            else:
+                return {"mensagem": "Não é possível mover cartas antes de comprar uma carta!", "carta": None}, None
+        else:
+            return {"mensagem": "Não é possível mover cartas fora do turno", "carta": None}, None
 
     def jogar_carta(self):
         pass
