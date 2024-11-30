@@ -139,6 +139,7 @@ class PlayerInterface(DogPlayerInterface):
 
             label = tk.Label(self.card_frames[direction], image=card_image)
             label.pack()
+            label.direction = direction
 
             self.card_frames[direction].image = card_image
 
@@ -184,11 +185,34 @@ class PlayerInterface(DogPlayerInterface):
         self._root.wait_variable(self.variavel_carta_selecionada)
 
         return self.variavel_carta_selecionada.get()
+    
+    def selecionar_pilha(self):
+        self.selected_pile_var = tk.StringVar()  # Variável para armazenar a direção da pilha selecionada
+
+        def on_pile_click(event):
+            for direction, frame in self.card_frames.items():
+                if frame == event.widget:
+                    self.selected_pile_var.set(direction)  # Define a direção selecionada
+                    messagebox.showinfo("Pilha Selecionada", f"Você selecionou a pilha: {direction}")
+
+        # Vincula o evento de clique a cada card_frame
+        for direction, frame in self.card_frames.items():
+            frame.bind("<Button-1>", on_pile_click)
+            frame.direction = direction
+
+        # Aguarda até que o usuário clique em uma pilha
+        self._root.wait_variable(self.selected_pile_var)
+
+        # Retorna a direção da pilha selecionada
+        return self.selected_pile_var.get()
 
     def place_card(self):
         self.update_player_turn_label("selecione uma carta para jogar na mesa")
         carta_selecionada = self.selecionar_carta_mao()
         self.update_player_turn_label("selecione uma pilha de destino")
+        pilha_selecionada = self.selecionar_pilha()
+        print(pilha_selecionada)
+        messagebox.showinfo("Ação", "Você colocou uma carta na mesa!")
 
     def move_card(self):
         cartas = self.selecionar_cartas_mesa()
