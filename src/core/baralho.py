@@ -9,7 +9,6 @@ class Baralho:
         print("Instanciou Baralho")
         self._cartas = []
         self.reiniciar_baralho()
-        print(self._cartas)
 
     def reiniciar_baralho(self):
         for numero in range(1,14):
@@ -21,4 +20,9 @@ class Baralho:
 
     def get_cartas(self) -> list[Carta]:
         return self._cartas
+    
+    def get_carta_codigo(self, codp) -> Carta:      #Retorna uma instância de carta que tenha o código passado
+        for carta in self._cartas:
+            if carta._codigo == codp:
+                return carta 
 

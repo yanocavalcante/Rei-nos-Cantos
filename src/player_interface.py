@@ -189,8 +189,8 @@ class PlayerInterface(DogPlayerInterface):
                 self.create_game_widgets()
 
                 jogadores = start_status.get_players()
-                jogada = self._partida.comecar_partida(jogadores)
-                self._dog_server_interface.send_move(jogada)
+                inicio = self._partida.comecar_partida(jogadores)
+                self._dog_server_interface.send_move(inicio)
                 # status_jogo = self._partida.obtem_status()    #Não sei pra que serve
 
     def receive_start(self, start_status):
@@ -206,6 +206,10 @@ class PlayerInterface(DogPlayerInterface):
         self.create_game_widgets()
 
         # status_jogo = self._partida.obtem_status()    #Continuo sem saber pra que serve
+    def receive_move(self, a_move):
+        print(a_move)
+        self._partida.receber_jogada(a_move)
+    
 
     def receber_notificacao_de_abandono(self):
         self._partida.set_partida_em_andamento
