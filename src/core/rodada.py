@@ -3,22 +3,26 @@ from .jogador import Jogador
 
 class Rodada:
     def __init__(self):
-        jogador = Jogador()
+        self._jogador = None
+        self._comprou_carta = None
 
     def comparar_jogador(self, jogador: Jogador) -> bool:
-        pass
+        if self._jogador.get_id() != jogador.get_id():
+            return False
+        else:
+            return True
 
     def alterar_comprou_carta(self):
-        pass
+        self._comprou_carta = not (self._comprou_carta)
 
     def verificar_compra(self):
-        pass
+        return self._comprou_carta
 
     def get_jogador(self) -> Jogador:
-        pass
+        return self._jogador
 
-    def adicionar_jogador(jog_contrario: Jogador) -> Jogador:
+    def adicionar_jogador(jog_contrario: Jogador) -> Jogador:       #RETIRAR NO DIAGRAMA
         pass
 
     def set_jogador(self, prox_jogador: Jogador) -> Jogador:
-        pass
+        self._jogador = prox_jogador
