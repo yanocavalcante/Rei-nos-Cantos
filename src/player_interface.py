@@ -148,25 +148,47 @@ class PlayerInterface(DogPlayerInterface):
         cartas_mao_jogador = self._partida._jogador_local._cartas
         nome_png_cartas_jogador = self.get_codigo_cartas(cartas_mao_jogador)
 
+        if hasattr(self, 'player_hand_frame'):
+            self.player_hand_frame.destroy() 
+
         self.player_hand_frame = tk.Frame(self._center_frame, bg='darkgreen')  
         self.player_hand_frame.grid(row=6, column=0, columnspan=4, pady=20)
 
         for card in nome_png_cartas_jogador:
             card_image = self._card_images[card]
             label = tk.Label(self.player_hand_frame, image=card_image, bg='white')  
+            label.carta_nome = card 
             label.pack(side=tk.LEFT, padx=5, pady=5)
+
     
     def buy_card(self):
-        self.update_player_turn_label("sua vez de jogar")
+        self.update_player_turn_label("é sua vez de jogar")
         dicionario, compra = self._partida.comprar_carta()
         messagebox.showinfo("Ação", dicionario['mensagem'])
         self.atualizar_mao()
         if compra is not None:
             self._dog_server_interface.send_move(compra)
 
+    def selecionar_carta_mao(self):
+        self.variavel_carta_selecionada = tk.StringVar() 
+
+        def on_click(event):
+            nome_carta_selecionada = event.widget.carta_nome
+            self.variavel_carta_selecionada.set(nome_carta_selecionada) 
+            messagebox.showinfo("Carta Selecionada", f"Você selecionou a carta: {nome_carta_selecionada}")
+
+        for widget in self.player_hand_frame.winfo_children():
+            widget.bind("<Button-1>", on_click)
+
+        # Aguarda até que a variável seja definida (o usuário clique em uma carta)
+        self._root.wait_variable(self.variavel_carta_selecionada)
+
+        return self.variavel_carta_selecionada.get()
+
     def place_card(self):
-        messagebox.showinfo("Ação", "Você colocou uma carta na mesa!")
-        self.update_player_turn_label("é sua vez de jogar")
+        self.update_player_turn_label("selecione uma carta para jogar na mesa")
+        carta_selecionada = self.selecionar_carta_mao()
+        self.update_player_turn_label("selecione uma pilha de destino")
 
     def move_card(self):
         cartas = self.selecionar_cartas_mesa()
