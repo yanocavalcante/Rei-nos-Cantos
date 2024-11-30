@@ -124,13 +124,11 @@ class PlayerInterface(DogPlayerInterface):
     
     def place_initial_cards(self):
         directions = ['Norte', 'Sul', 'Leste', 'Oeste']
-        print(self._partida._mesa._pilhas)
-        pilhas_mesa = self._partida._mesa._pilhas
+        pilhas_mesa = self._partida._mesa._pilhas[:4]
         cartas_mesa = []
 
         for pilha in pilhas_mesa:
-            print('cartas',pilha._cartas)
-            #cartas_mesa.append(pilha._cartas[0]) 
+            cartas_mesa.append(pilha._cartas[0]) 
 
         nome_png_cartas = self.get_codigo_cartas(cartas_mesa)
 
@@ -216,12 +214,13 @@ class PlayerInterface(DogPlayerInterface):
         self.player_turn_label = tk.Label(self._center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
         self.player_turn_label.grid(row=0, column=0, pady=10)
         self.update_player_turn_label("start")
-        self.create_game_widgets()
 
         # status_jogo = self._partida.obtem_status()    #Continuo sem saber pra que serve
     def receive_move(self, a_move):
         print(a_move)
         self._partida.receber_jogada(a_move)
+        if a_move['tipo_jogada'] == 'inicio':
+            self.create_game_widgets()
     
 
     def receber_notificacao_de_abandono(self):
