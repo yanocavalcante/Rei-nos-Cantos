@@ -96,7 +96,6 @@ class Partida:
             'pilha_remove': None,
             'cartas': None,
             'match_status': "next",
-            'venceu': "false"
         }
         return mover
 
@@ -104,7 +103,20 @@ class Partida:
         pass
 
     def comprar_carta(self):
-        pass
+        if self._rodada_atual.comparar_jogador(self._jogador_local):
+            if self._rodada_atual.verificar_compra():
+                return {"boolean": True, "mensagem": "Não é possível comprar mais de uma carta!", "carta": None }, None
+            else:
+                carta_comprada = self._mesa.comprar_carta_monte()
+                self._jogador_local.adicionar_cartas(carta_comprada)
+                self._rodada_atual.alterar_comprou_carta()
+                compra = {                  #Comprar Carta tem que ser jogada porque precisa atualizar o monte do jogador remoto também
+                    'tipo_jogada': "compra",
+                    'cartas': carta_comprada.get_codigo(),
+                }
+                return {"boolean": False, "mensagem": None, "carta": carta_comprada}, compra
+        else:
+            return {"boolean": True, "mensagem": "Não é possível comprar carta fora do turno", "carta": None}, None
 
     def colocar_rei(self):
         pass
