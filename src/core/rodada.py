@@ -4,7 +4,7 @@ from .jogador import Jogador
 class Rodada:
     def __init__(self):
         self._jogador = None
-        self._comprou_carta = None
+        self._comprou_carta = False
 
     def comparar_jogador(self, jogador: Jogador) -> bool:
         if self._jogador.get_id() != jogador.get_id():
