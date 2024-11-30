@@ -7,8 +7,6 @@ class Partida:
         print("Instanciou Partida")
         self._rodada_atual = Rodada()
         self._mesa = Mesa()
-        self._jogador_remoto = Jogador()
-        self._jogador_local = Jogador()
         self._partida_em_andamento = False
 
     def abandonar_partida(self):
@@ -18,12 +16,8 @@ class Partida:
         pass
 
     def receive_start(self, jogadores: list):
-        self._jogador_local.reset()
-        id_jog = jogadores[1][1]
-        self._jogador_local.inicializar(id_jog)
-        self._jogador_remoto.reset()
-        id_jog = jogadores[0][0]
-        self._jogador_remoto.inicializar(id_jog)
+        self._jogador_local = Jogador(jogadores[1][0], jogadores[1][1])
+        self._jogador_remoto = Jogador(jogadores[0][0], jogadores[0][1])
         self._rodada_atual.set_jogador(self._jogador_remoto)
 
     def obter_status_partida(self) -> str:
@@ -47,12 +41,8 @@ class Partida:
     def comecar_partida(self, jogadores: list):
         pilhas_mesa = self._mesa.get_pilhas()
 
-        self._jogador_local.reset()
-        self._jogador_local.inicializar(jogadores[0][1])
-
-        self._jogador_remoto.reset()
-        self._jogador_remoto.inicializar(jogadores[1][1])
-
+        self._jogador_local = Jogador(jogadores[0][0], jogadores[0][1])
+        self._jogador_remoto = Jogador(jogadores[1][0], jogadores[1][1])
         self._rodada_atual.set_jogador(self._jogador_local)
         
         self.instanciar_baralho()
@@ -96,7 +86,6 @@ class Partida:
             'pilha_remove': None,
             'cartas': None,
             'match_status': "next",
-            'venceu': "false"
         }
         return mover
 
@@ -104,7 +93,21 @@ class Partida:
         pass
 
     def comprar_carta(self):
-        pass
+        if self._rodada_atual.comparar_jogador(self._jogador_local):
+            if self._rodada_atual.verificar_compra():
+                return {"mensagem": "Não é possível comprar mais de uma carta!", "carta": None }, None
+            else:
+                carta_comprada = self._mesa.comprar_carta_monte()
+                self._jogador_local.adicionar_cartas([carta_comprada])
+                self._rodada_atual.alterar_comprou_carta()
+                compra = {                  #Comprar Carta tem que ser jogada porque precisa atualizar o monte do jogador remoto também
+                    'tipo_jogada': "compra",
+                    'cartas': carta_comprada.get_codigo(),
+                    'match_status': 'next',
+                }
+                return {"mensagem": "Comprou Carta!", "carta": carta_comprada}, compra
+        else:
+            return {"mensagem": "Não é possível comprar carta fora do turno", "carta": None}, None
 
     def colocar_rei(self):
         pass

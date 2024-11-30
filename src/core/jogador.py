@@ -1,11 +1,11 @@
 class Jogador:
-    def __init__(self):
-        self._cartas =[]
+    def __init__(self, nome, id):
+        self._cartas = []
+        self._nome = nome
+        self._id = id
+        self._venceu_partida = False        
 
     def reset(self):
-        pass
-
-    def inicializar(self, id_jog):
         pass
 
     def troca_turno(self):
@@ -27,6 +27,9 @@ class Jogador:
 
     def get_mao(self) -> list:
         return self._cartas
+    
+    def get_id(self):
+        return self._id
     
     def get_codigos_mao(self) -> list:
         lista_codigos = []

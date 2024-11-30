@@ -18,11 +18,8 @@ class Mesa:
     def limpar_mesa(self):
         pass
 
-    def remover_carta_monte(self, carta):
-        pass
-
-    def comprar_carta_monte(self):
-        pass
+    def comprar_carta_monte(self) -> object:
+        return self._monte._cartas.pop(-1)
 
     def embaralhar_monte(self) -> list:
         cartas_do_baralho = self._baralho.get_cartas()
