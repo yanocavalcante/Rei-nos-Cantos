@@ -117,8 +117,29 @@ class Partida:
         else:
             return {"mensagem": "Não é possível comprar carta fora do turno", "carta": None}, None
 
-    def colocar_rei(self):
-        pass
+    def colocar_rei(self, rei, canto):
+        if self._rodada_atual.comparar_jogador(self._jogador_local):
+            if self._rodada_atual.verificar_compra():
+                if self._mesa.get_baralho().get_carta_codigo(rei):
+                    if self._mesa.get_pilha_codigo(canto).verifica_canto(): 
+                        if self._mesa.get_pilha_codigo(canto).verifica_colocacao_carta(rei):
+                            rei_no_canto = {              
+                            'tipo_jogada': "rei_no_canto",
+                            'carta': rei.get_codigo(),
+                            'pilha_adiciona': canto,
+                            'match_status': 'next',
+                            }
+                            return {"mensagem": "Colocou Rei no Canto!", "carta": None }, rei_no_canto
+                        else:
+                            return {"mensagem": "Movimento Inválido!", "carta": None }, None
+                    else:
+                        return {"mensagem": "Pilha escolhida não é Canto!", "carta": None}, None        #Acho que eu não preciso verificar se é canto
+                else:
+                    return {"mensagem": "Carta escolhida não é Rei!", "carta": None}, None                    
+            else:
+                return {"mensagem": "Não é possível colocar Rei no Canto antes de comprar uma carta!", "carta": None}, None
+        else:
+            return {"mensagem": "Não é possível colocar Rei no Canto fora do turno", "carta": None}, None
 
     def receber_jogada(self, jogada):
         if jogada['tipo_jogada'] == 'inicio':
