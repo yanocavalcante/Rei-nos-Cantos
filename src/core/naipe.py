@@ -1,9 +1,7 @@
 from enum import Enum
 
-
 class Naipe(Enum):
-    COPAS = "Copas"
-    ESPADAS = "Espadas"
-    OUROS = "Ouros"
-    PAUS = "Paus"
-
+    HEARTS = "Hearts"
+    SPADES = "Spades"
+    DIAMONDS = "Diamonds"
+    CLUBS = "Clubs"

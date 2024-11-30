@@ -29,7 +29,7 @@ class PlayerInterface(DogPlayerInterface):
 
     def load_card_images(self):
         suits = ['hearts', 'diamonds', 'clubs', 'spades']
-        ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace']
+        ranks = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
         images = {}
         for suit in suits:
             for rank in ranks:
@@ -115,17 +115,30 @@ class PlayerInterface(DogPlayerInterface):
 
         self.give_up_button = tk.Button(self._center_frame, text="Desistir da Partida", command=self.show_welcome_screen, bg="#f81313")
         self.give_up_button.grid(row=5, column=4, pady=10)
-
+    
+    def get_codigo_cartas(self, cartas):
+        nome_correto_cartas = []
+        for carta in cartas:
+            nome_correto_cartas.append(f'{carta.get_numero()}_of_{carta._naipe.value.lower()}')
+        return nome_correto_cartas
+    
     def place_initial_cards(self):
-        import random
         directions = ['Norte', 'Sul', 'Leste', 'Oeste']
-        random_cards_table = random.sample(list(self._card_images.keys()), 4)
+        print(self._partida._mesa._pilhas)
+        pilhas_mesa = self._partida._mesa._pilhas
+        cartas_mesa = []
+
+        for pilha in pilhas_mesa:
+            print('cartas',pilha._cartas)
+            #cartas_mesa.append(pilha._cartas[0]) 
+
+        nome_png_cartas = self.get_codigo_cartas(cartas_mesa)
 
         for i, direction in enumerate(directions):
-            card_image = self._card_images[random_cards_table[i]]
+            card_image = self._card_images[nome_png_cartas[i]]
 
             if direction in ['Leste', 'Oeste']:
-                pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{random_cards_table[i]}.png"))
+                pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_png_cartas[i]}.png"))
                 pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
                 rotated_image = pil_image.rotate(90, expand=True)
                 card_image = ImageTk.PhotoImage(rotated_image)
@@ -135,13 +148,13 @@ class PlayerInterface(DogPlayerInterface):
 
             self.card_frames[direction].image = card_image
 
-        remaining_cards = list(set(self._card_images.keys()) - set(random_cards_table))
-        random_cards_hand = random.sample(remaining_cards, 7)
+        cartas_mao_jogador = self._partida._jogador_local._cartas
+        nome_png_cartas_jogador = self.get_codigo_cartas(cartas_mao_jogador)
 
         self.player_hand_frame = tk.Frame(self._center_frame, bg='darkgreen')  
         self.player_hand_frame.grid(row=6, column=0, columnspan=4, pady=20)
 
-        for card in random_cards_hand:
+        for card in nome_png_cartas_jogador:
             card_image = self._card_images[card]
             label = tk.Label(self.player_hand_frame, image=card_image, bg='white')  
             label.pack(side=tk.LEFT, padx=5, pady=5)
@@ -186,10 +199,10 @@ class PlayerInterface(DogPlayerInterface):
                 self.player_turn_label = tk.Label(self._center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
                 self.player_turn_label.grid(row=0, column=0, pady=10)
                 self.update_player_turn_label("start")
-                self.create_game_widgets()
 
                 jogadores = start_status.get_players()
                 inicio = self._partida.comecar_partida(jogadores)
+                self.create_game_widgets()
                 self._dog_server_interface.send_move(inicio)
                 # status_jogo = self._partida.obtem_status()    #Não sei pra que serve
 

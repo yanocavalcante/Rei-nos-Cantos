@@ -12,10 +12,10 @@ class Baralho:
 
     def reiniciar_baralho(self):
         for numero in range(1,14):
-            ouro = Carta(numero, Naipe.OUROS) 
-            copa = Carta(numero, Naipe.COPAS)
-            pau = Carta(numero, Naipe.PAUS)
-            espada = Carta(numero, Naipe.ESPADAS)
+            ouro = Carta(numero, Naipe.DIAMONDS) 
+            copa = Carta(numero, Naipe.HEARTS)
+            pau = Carta(numero, Naipe.CLUBS)
+            espada = Carta(numero, Naipe.SPADES)
             self._cartas.extend([ouro, copa, pau, espada])
 
     def get_cartas(self) -> list[Carta]:
