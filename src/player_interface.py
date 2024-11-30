@@ -169,7 +169,13 @@ class PlayerInterface(DogPlayerInterface):
         self.update_player_turn_label("place_card")
 
     def move_card(self):
-        messagebox.showinfo("Ação", "Você manipulou uma carta!")
+        cartas = self.selecionar_cartas_mesa()
+        pilha1 = None
+        pilha2 = self.selecionar_destion()
+        dicionario, mover = self._partida.mover_cartas(cartas, pilha1, pilha2)
+        messagebox.showinfo("Ação", dicionario['mensagem'])
+        if mover is not None:
+            self._dog_server_interface.send_move(mover)
 
     def place_king(self):
         messagebox.showinfo("Ação", "Você colocou um Rei em um canto!")
