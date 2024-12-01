@@ -120,12 +120,14 @@ class Partida:
     def colocar_rei(self, rei, canto):
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
-                if self._mesa.get_baralho().get_carta_codigo(rei):
+                if self._mesa.get_baralho().get_carta_codigo(rei).verificar_rei():
                     if self._mesa.get_pilha_codigo(canto).verifica_canto(): 
                         if self._mesa.get_pilha_codigo(canto).verifica_colocacao_carta(rei):
+                            self._jogador_local.remover_carta(rei)
+                            self._mesa.get_pilha_codigo(canto).adicionar_cartas_pilha([self._mesa.get_baralho().get_carta_codigo(rei)])
                             rei_no_canto = {              
                             'tipo_jogada': "rei_no_canto",
-                            'carta': rei.get_codigo(),
+                            'carta': rei,
                             'pilha_adiciona': canto,
                             'match_status': 'next',
                             }
@@ -153,10 +155,11 @@ class Partida:
             self._jogador_remoto.adicionar_cartas(self._mesa.get_cartas_codigo(jogada['cartas_jogador_local']))   #Lembrar que os pontos de vista sempre se invertem
         else:
             if jogada['tipo_jogada'] == 'mover':
-                self._mesa_get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
-                self._mesa_get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
+                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
+                self._mesa.get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
             elif jogada['tipo_jogada'] == 'rei_no_canto' or jogada['tipo_jogada'] == 'jogar':
-                self._mesa_get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
+                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
+                self._jogador_remoto.remover_carta(self._mesa.get_baralho().get_carta_codigo(jogada['carta']))
             elif jogada['tipo_jogada'] == 'passar':
                 nova_rodada = Rodada()
                 self.set_rodada_atual(nova_rodada)

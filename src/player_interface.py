@@ -220,11 +220,13 @@ class PlayerInterface(DogPlayerInterface):
             self._dog_server_interface.send_move(mover)
 
     def place_king(self):
-        messagebox.showinfo("Ação", "Você colocou um Rei em um canto!")
         self.update_player_turn_label("é sua vez de jogar")
         carta = self.selecionar_carta_mao()
         pilha = self.selecionar_destino()
         dicionario, rei_no_canto = self._partida.colocar_rei(carta, pilha)
+        messagebox.showinfo("Ação", dicionario['mensagem'])
+        if rei_no_canto is not None:
+            self._dog_server_interface.send_move(rei_no_canto)
 
     def pass_turn(self):
         messagebox.showinfo("Ação", "Você passou a vez!")
