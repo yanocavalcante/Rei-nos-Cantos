@@ -97,8 +97,24 @@ class Partida:
         else:
             return {"mensagem": "Não é possível mover cartas fora do turno", "carta": None}, None
 
-    def jogar_carta(self):
-        pass
+    def jogar_carta(self, carta, pilha):
+        # tem que ter função para tratar carta e pilha, que chegam nessa função como strings
+        if self._rodada_atual.comparar_jogador(self._jogador_local):
+            if self._rodada_atual.verificar_compra():
+                if self._mesa.get_pilha_codigo(pilha).verifica_colocacao_carta(carta):
+                    jogar_carta = {
+                        'tipo_jogada': "jogar",
+                        'carta': carta.get_codigo(),
+                        'pilha_adiciona': pilha,
+                        'match_status': "next",
+                    }
+                    return {"mensagem": "Colocou carta na mesa!", "carta": None}, jogar_carta
+                else:
+                    return {"mensagem": "Movimento inválido", "carta": None}, None
+            else:
+                return {"mensagem": "Não é possível jogar carta antes de comprar uma carta!", "carta": None}, None
+        else:
+            return {"mensagem": "Não é possível jogar carta fora do turno", "carta": None}, None
 
     def comprar_carta(self):
         if self._rodada_atual.comparar_jogador(self._jogador_local):

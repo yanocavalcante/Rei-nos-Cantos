@@ -211,8 +211,8 @@ class PlayerInterface(DogPlayerInterface):
         carta_selecionada = self.selecionar_carta_mao()
         self.update_player_turn_label("selecione uma pilha de destino")
         pilha_selecionada = self.selecionar_pilha()
-        print(pilha_selecionada)
-        messagebox.showinfo("Ação", "Você colocou uma carta na mesa!")
+        dicionario, jogar_carta = self._partida.jogar_carta(carta_selecionada, pilha_selecionada)
+        messagebox.showinfo("Ação", dicionario['mensagem'])
 
     def move_card(self):
         cartas = self.selecionar_cartas_mesa()
