@@ -4,7 +4,12 @@ class Pilha:
         self._cartas = []
 
     def verifica_colocacao_carta(self, carta) -> bool:
-        pass
+        if self._cartas == []:
+            return True
+        if self._cartas[-1]._numero == carta._numero + 1:
+            if self._cartas[-1].verificar_cor_carta() != carta.verificar_cor_carta():
+                return True
+        return False
 
     def verifica_canto(self) -> bool:
         pass
