@@ -251,6 +251,9 @@ class PlayerInterface(DogPlayerInterface):
         if jogar_carta is not None:
             self.place_card_interface(jogar_carta)
             self.atualizar_mao()
+            if jogar_carta['venceu'] == 'True':
+                messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
+                self._root.destroy()
             self._dog_server_interface.send_move(jogar_carta)
 
         self.update_player_turn_label("é sua vez de jogar")
@@ -308,6 +311,9 @@ class PlayerInterface(DogPlayerInterface):
         dicionario, rei_no_canto = self._partida.colocar_rei(carta, pilha)
         messagebox.showinfo("Ação", dicionario['mensagem'])
         if rei_no_canto is not None:
+            if rei_no_canto['venceu'] == 'True':
+                messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
+                self._root.destroy()
             self._dog_server_interface.send_move(rei_no_canto)
 
     def pass_turn(self):
