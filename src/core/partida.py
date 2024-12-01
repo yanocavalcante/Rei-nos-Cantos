@@ -12,7 +12,7 @@ class Partida:
     def abandonar_partida(self):
         pass
 
-    def obtem_status(self):
+    def obtem_status(self):         #RETIRAR NO DIAGRAMA
         pass
 
     def receive_start(self, jogadores: list):
@@ -20,13 +20,13 @@ class Partida:
         self._jogador_remoto = Jogador(jogadores[0][0], jogadores[0][1])
         self._rodada_atual.set_jogador(self._jogador_remoto)
 
-    def obter_status_partida(self) -> str:
+    def obter_status_partida(self) -> str:  #RETIRAR NO DIAGRAMA
         pass
 
-    def restaurar_estado_inicial(self):
+    def restaurar_estado_inicial(self):     #RETIRAR NO DIAGRAMA
         pass
 
-    def reiniciar_vitoria(self):
+    def reiniciar_vitoria(self):            #RETIRAR NO DIAGRAMA
         pass
 
     def passar_a_vez(self):
@@ -46,10 +46,10 @@ class Partida:
             return {"mensagem": "Não é possível passar a vez fora do turno"}, None
             
 
-    def pegar_jog_contrario(self, jogador):
+    def pegar_jog_contrario(self, jogador):     #RETIRAR NO DIAGRAMA
         pass
 
-    def desistir(self):
+    def desistir(self):                 #RETIRAR NO DIAGRAMA
         pass
 
     def comecar_partida(self, jogadores: list):
@@ -72,7 +72,7 @@ class Partida:
             'tipo_jogada': "inicio",
             'pilha_adiciona': None,
             'pilha_remove': None,
-            'carta': None,
+            'cartas': None,
             'cartas_monte': self._mesa.get_monte().get_codigo_cartas(),
             'cartas_pilha_0': pilhas_mesa[0].get_codigo_cartas(),
             'cartas_pilha_1': pilhas_mesa[1].get_codigo_cartas(),
@@ -92,7 +92,7 @@ class Partida:
     def avaliar_vencedor(self) -> bool:
         pass
 
-    def mover_cartas(self, cartas, pilha1, pilha2):
+    def mover_cartas(self, cartas: list[str], pilha1: str, pilha2: str) -> dict:
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
                 if self._mesa.get_pilha_codigo(pilha2).verifica_colocacao_carta(cartas):
@@ -111,7 +111,7 @@ class Partida:
         else:
             return {"mensagem": "Não é possível mover cartas fora do turno"}, None
 
-    def jogar_carta(self, nome_carta, direcao):
+    def jogar_carta(self, nome_carta: str, direcao: str) -> dict:
         pilha = self._mesa.get_pilha_codigo(direcao)
         carta = self._jogador_local.get_carta_por_nome_imagem(nome_carta)
 
@@ -120,20 +120,19 @@ class Partida:
                 if pilha.verifica_colocacao_carta(carta):
                     self._jogador_local.remover_carta(carta)
                     pilha.adicionar_cartas_pilha([carta])
-                    
                     jogar_carta = {
                         'tipo_jogada': "jogar",
-                        'carta': carta.get_codigo(),
+                        'cartas': carta.get_codigo(),
                         'pilha_adiciona': pilha.get_codigo(),
                         'match_status': "next",
                     }
                     return {"mensagem": "Colocou carta na mesa!"}, jogar_carta
                 else:
-                    return {"mensagem": "Movimento inválido"}, None
+                    return {"mensagem": "Movimento inválido!"}, None
             else:
                 return {"mensagem": "Não é possível jogar carta antes de comprar uma carta!"}, None
         else:
-            return {"mensagem": "Não é possível jogar carta fora do turno"}, None
+            return {"mensagem": "Não é possível jogar carta fora do turno!"}, None
 
     def comprar_carta(self):
         if self._rodada_atual.comparar_jogador(self._jogador_local):
@@ -146,37 +145,41 @@ class Partida:
                 compra = {                  #Comprar Carta tem que ser jogada porque precisa atualizar o monte do jogador remoto também
                     'tipo_jogada': "compra",
                     'cartas': carta_comprada.get_codigo(),
+                    'pilha_remove': 'M',
                     'match_status': 'next',
                 }
                 return {"mensagem": "Comprou Carta!"}, compra
         else:
             return {"mensagem": "Não é possível comprar carta fora do turno"}, None
 
-    def colocar_rei(self, rei, canto):
+    def colocar_rei(self, nome_carta: str, codp: str):
+        pilha = self._mesa.get_pilha_codigo(codp)
+        carta = self._jogador_local.get_carta_por_nome_imagem(nome_carta)
+
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
-                if self._jogador_local.get_carta_por_nome_imagem(rei).verificar_rei():
-                    if self._mesa.get_pilha_codigo(canto).verifica_canto(): 
-                        if self._mesa.get_pilha_codigo(canto).verifica_colocacao_carta(rei):
-                            self._jogador_local.remover_carta(rei)
-                            self._mesa.get_pilha_codigo(canto).adicionar_cartas_pilha([self._jogador_local.get_carta_por_nome_imagem(rei)])
+                if carta.verificar_rei():
+                    if pilha.verifica_canto(): 
+                        if pilha.verifica_colocacao_carta(carta):
+                            self._jogador_local.remover_carta(carta)
+                            pilha.adicionar_cartas_pilha([carta])
                             rei_no_canto = {              
-                            'tipo_jogada': "rei_no_canto",
-                            'carta': rei,
-                            'pilha_adiciona': canto,
-                            'match_status': 'next',
+                                'tipo_jogada': "rei_no_canto",
+                                'cartas': carta.get_codigo(),
+                                'pilha_adiciona': codp,
+                                'match_status': 'next',
                             }
-                            return {"mensagem": "Colocou Rei no Canto!", "carta": None }, rei_no_canto
+                            return {"mensagem": "Colocou Rei no Canto!"}, rei_no_canto
                         else:
-                            return {"mensagem": "Movimento Inválido!", "carta": None }, None
+                            return {"mensagem": "Movimento Inválido!"}, None
                     else:
-                        return {"mensagem": "Pilha escolhida não é Canto!", "carta": None}, None        #Acho que eu não preciso verificar se é canto
+                        return {"mensagem": "Pilha escolhida não é Canto!"}, None        #Acho que eu não preciso verificar se é canto
                 else:
-                    return {"mensagem": "Carta escolhida não é Rei!", "carta": None}, None                    
+                    return {"mensagem": "Carta escolhida não é Rei!"}, None                    
             else:
-                return {"mensagem": "Não é possível colocar Rei no Canto antes de comprar uma carta!", "carta": None}, None
+                return {"mensagem": "Não é possível colocar Rei no Canto antes de comprar uma carta!"}, None
         else:
-            return {"mensagem": "Não é possível colocar Rei no Canto fora do turno", "carta": None}, None
+            return {"mensagem": "Não é possível colocar Rei no Canto fora do turno"}, None
 
     def receber_jogada(self, jogada):
         if jogada['tipo_jogada'] == 'inicio':
@@ -192,32 +195,35 @@ class Partida:
             if jogada['tipo_jogada'] == 'mover':
                 self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
                 self._mesa.get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
+            
             elif jogada['tipo_jogada'] == 'rei_no_canto' or jogada['tipo_jogada'] == 'jogar':
-                self._jogador_remoto.remover_carta((self._mesa.get_cartas_codigo(jogada['carta']))[-1])
-                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['carta']))
+                self._jogador_remoto.remover_carta((self._mesa.get_cartas_codigo(jogada['cartas']))[-1])
+                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo([jogada['cartas']]))
+            
             elif jogada['tipo_jogada'] == 'passar':
                 nova_rodada = Rodada()
                 nova_rodada.set_jogador(self._jogador_local)
                 self.set_rodada_atual(nova_rodada)
+
+            elif jogada['tipo_jogada'] == 'compra':
+                self._mesa.get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo([jogada['cartas']]))
+
             elif jogada['tipo_jogada'] == 'desistir':
                 pass
 
-    def verificar_inicio(self) -> bool:     #APAGAR NO DIAGRAMA
+    def verificar_inicio(self) -> bool:     #RETIRAR NO DIAGRAMA
         pass
 
-    def obter_jogada(self, jogada: dict):   #APAGAR NO DIAGRAMA
+    def obter_jogada(self, jogada: dict):   #RETIRAR NO DIAGRAMA
         pass
 
     def set_partida_em_andamento(self):
-        if self._partida_em_andamento == True:
-            self._partida_em_andamento = False
-        elif self._partida_em_andamento == False:
-            self._partida_em_andamento = True
+        self._partida_em_andamento = not(self._partida_em_andamento)
 
     def get_partida_em_andamento(self) -> bool:
         return self._partida_em_andamento
     
-    def instanciar_baralho(self):
+    def instanciar_baralho(self) -> object:
         return self._mesa.instanciar_baralho()
 
     def set_rodada_atual(self, rodada):

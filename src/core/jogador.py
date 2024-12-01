@@ -5,38 +5,39 @@ class Jogador:
         self._id = id
         self._venceu_partida = False        
 
-    def reset(self):
+    def get_mao(self) -> list:
+        return self._cartas
+    
+    def get_id(self):
+        return self._id
+
+    def reset(self):            #RETIRAR NO DIAGRAMA
         pass
 
-    def troca_turno(self):
+    def troca_turno(self):      #RETIRAR NO DIAGRAMA
         pass
 
     def adicionar_cartas(self, cartas: list):
         for carta in cartas:
             self._cartas.append(carta)
     
-    def remover_carta(self, carta_a_remover):
+    def remover_carta(self, carta_a_remover: object):
         if carta_a_remover in self._cartas:
             self._cartas.remove(carta_a_remover)
 
-
     def sem_cartas(self) -> bool:
+        if len(self._cartas) == 0:
+            return True
+        else:
+            return False
+
+    def distribuir_cartas(self, lista_cartas: list) -> list:        #RETIRAR NO DIAGRAMA
         pass
 
-    def distribuir_cartas(self, lista_cartas: list) -> list: 
-        #Quase crtz que essas funcs "distribuir" não deveriam ser de Jogador
+    def distribuir_cartas(self, cartas_restantes: list):        #RETIRAR NO DIAGRAMA
         pass
-
-    def distribuir_cartas(self, cartas_restantes: list):
-        pass
-
-    def get_mao(self) -> list:
-        return self._cartas
     
-    def get_id(self):
-        return self._id
-    
-    def get_codigos_mao(self) -> list:
+    def get_codigos_mao(self) -> list:  #Retorna uma lista com os códigos das cartas da mão do Jogador
         lista_codigos = []
         for carta in self._cartas:
             lista_codigos.append(carta.get_codigo())
@@ -49,5 +50,3 @@ class Jogador:
         for carta in self._cartas:
             if carta.get_numero() == int(rank) and carta.get_naipe().name.lower() == suit.lower():
                 return carta
-        return None 
-
