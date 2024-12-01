@@ -91,6 +91,13 @@ class PlayerInterface(DogPlayerInterface):
                         column={'Norte': 2, 'Sul': 2, 'Leste': 3, 'Oeste': 1}[direction], pady=10)
             self.card_frames[direction] = frame
 
+        for canto in ['C0', 'C1', 'C2', 'C3']:
+            frame = tk.Frame(self._center_frame, width=150, height=100, relief=tk.RAISED)
+            frame.grid(row={'C0': 1, 'C1': 3, 'C2': 3, 'C3': 1}[canto],
+                        column={'C0': 3, 'C1': 3, 'C2': 1, 'C3': 1}[canto], pady=10)
+            self.card_frames[canto] = frame
+
+
         self.place_initial_cards()
         self.load_reverse_card_image()
 
@@ -180,6 +187,25 @@ class PlayerInterface(DogPlayerInterface):
 
         return self.variavel_carta_selecionada.get()
 
+    def selecionar_pilha(self):
+        self.pilha_selecionada = tk.StringVar()
+
+        def on_button_click(direction):
+            """Define a direção selecionada e destrói os botões."""
+            self.pilha_selecionada.set(direction)
+            for button in self.selection_buttons.values():
+                button.destroy()
+
+        self.selection_buttons = {}
+
+        for direction, frame in self.card_frames.items():
+            button = tk.Button(frame, text="Selecionar", command=lambda dir=direction: on_button_click(dir))
+            button.pack()
+            self.selection_buttons[direction] = button
+
+        self._root.wait_variable(self.pilha_selecionada)
+
+        return self.pilha_selecionada.get()
     def place_card(self):
         messagebox.showinfo("Ação", "Você colocou uma carta na mesa!")
         self.update_player_turn_label("é sua vez de jogar")
