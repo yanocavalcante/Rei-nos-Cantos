@@ -164,6 +164,22 @@ class PlayerInterface(DogPlayerInterface):
         if compra is not None:
             self._dog_server_interface.send_move(compra)
 
+    def selecionar_carta_mao(self):
+        self.variavel_carta_selecionada = tk.StringVar() 
+
+        def on_click(event):
+            nome_carta_selecionada = event.widget.carta_nome
+            self.variavel_carta_selecionada.set(nome_carta_selecionada) 
+            messagebox.showinfo("Carta Selecionada", f"Você selecionou a carta: {nome_carta_selecionada}")
+
+        for widget in self.player_hand_frame.winfo_children():
+            widget.bind("<Button-1>", on_click)
+
+        # Aguarda até que a variável seja definida (o usuário clique em uma carta)
+        self._root.wait_variable(self.variavel_carta_selecionada)
+
+        return self.variavel_carta_selecionada.get()
+
     def place_card(self):
         messagebox.showinfo("Ação", "Você colocou uma carta na mesa!")
         self.update_player_turn_label("é sua vez de jogar")
