@@ -30,7 +30,21 @@ class Partida:
         pass
 
     def passar_a_vez(self):
-        pass
+        if self._rodada_atual.comparar_jogador(self._jogador_local):
+            if self._rodada_atual.verificar_compra():
+                nova_rodada = Rodada()
+                nova_rodada.set_jogador(self._jogador_remoto)
+                self.set_rodada_atual(nova_rodada)
+                passar = {              
+                            'tipo_jogada': "passar",
+                            'match_status': 'next',
+                        }
+                return {"mensagem": "Você passou a vez!"}, passar
+            else:
+                return {"mensagem": "Não é possível passar a vez antes de comprar uma carta!"}, None
+        else:
+            return {"mensagem": "Não é possível passar a vez fora do turno"}, None
+            
 
     def pegar_jog_contrario(self, jogador):
         pass
@@ -89,13 +103,13 @@ class Partida:
                     'pilha_adiciona': pilha2,
                     'match_status': 'next',
                     }
-                    return {"mensagem": "Moveu cartas!", "carta": None }, mover
+                    return {"mensagem": "Moveu cartas!"}, mover
                 else:
-                    return {"mensagem": "Movimento Inválido!", "carta": None}, None
+                    return {"mensagem": "Movimento Inválido!"}, None
             else:
-                return {"mensagem": "Não é possível mover cartas antes de comprar uma carta!", "carta": None}, None
+                return {"mensagem": "Não é possível mover cartas antes de comprar uma carta!"}, None
         else:
-            return {"mensagem": "Não é possível mover cartas fora do turno", "carta": None}, None
+            return {"mensagem": "Não é possível mover cartas fora do turno"}, None
 
     def jogar_carta(self, nome_carta, direcao):
         pilha = self._mesa.get_pilha_codigo(direcao)
@@ -113,18 +127,18 @@ class Partida:
                         'pilha_adiciona': pilha.get_codigo(),
                         'match_status': "next",
                     }
-                    return {"mensagem": "Colocou carta na mesa!", "carta": None}, jogar_carta
+                    return {"mensagem": "Colocou carta na mesa!"}, jogar_carta
                 else:
-                    return {"mensagem": "Movimento inválido", "carta": None}, None
+                    return {"mensagem": "Movimento inválido"}, None
             else:
-                return {"mensagem": "Não é possível jogar carta antes de comprar uma carta!", "carta": None}, None
+                return {"mensagem": "Não é possível jogar carta antes de comprar uma carta!"}, None
         else:
-            return {"mensagem": "Não é possível jogar carta fora do turno", "carta": None}, None
+            return {"mensagem": "Não é possível jogar carta fora do turno"}, None
 
     def comprar_carta(self):
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
-                return {"mensagem": "Não é possível comprar mais de uma carta!", "carta": None }, None
+                return {"mensagem": "Não é possível comprar mais de uma carta!"}, None
             else:
                 carta_comprada = self._mesa.comprar_carta_monte()
                 self._jogador_local.adicionar_cartas([carta_comprada])
@@ -134,9 +148,9 @@ class Partida:
                     'cartas': carta_comprada.get_codigo(),
                     'match_status': 'next',
                 }
-                return {"mensagem": "Comprou Carta!", "carta": carta_comprada}, compra
+                return {"mensagem": "Comprou Carta!"}, compra
         else:
-            return {"mensagem": "Não é possível comprar carta fora do turno", "carta": None}, None
+            return {"mensagem": "Não é possível comprar carta fora do turno"}, None
 
     def colocar_rei(self):
         pass
@@ -160,6 +174,7 @@ class Partida:
                 self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['carta']))
             elif jogada['tipo_jogada'] == 'passar':
                 nova_rodada = Rodada()
+                nova_rodada.set_jogador(self._jogador_local)
                 self.set_rodada_atual(nova_rodada)
             elif jogada['tipo_jogada'] == 'desistir':
                 pass

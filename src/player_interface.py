@@ -298,8 +298,11 @@ class PlayerInterface(DogPlayerInterface):
         self.update_player_turn_label("é sua vez de jogar")
 
     def pass_turn(self):
-        messagebox.showinfo("Ação", "Você passou a vez!")
-        self.update_player_turn_label("é a vez do seu oponente jogar")
+        dicionario, passar = self._partida.passar_a_vez()
+        messagebox.showinfo("Ação", dicionario['mensagem'])
+        if passar is not None:
+            self._dog_server_interface.send_move(passar)
+            self.update_player_turn_label("é a vez do seu oponente jogar")
 
     def clear_screen(self):
         """Remove todos os widgets da tela atual."""
@@ -348,9 +351,9 @@ class PlayerInterface(DogPlayerInterface):
             self.create_game_widgets()
         if a_move['tipo_jogada'] == 'jogar':
             self.place_card_interface(a_move)
+        if a_move['tipo_jogada'] == 'passar':
+            self.update_player_turn_label("compre uma carta")
         
-    
-
     def receber_notificacao_de_abandono(self):
         self._partida.set_partida_em_andamento
         messagebox.showinfo("Ação", "O seu oponente desistiu da partida")
