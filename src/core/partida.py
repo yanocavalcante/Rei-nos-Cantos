@@ -98,7 +98,7 @@ class Partida:
             return {"mensagem": "Não é possível mover cartas fora do turno", "carta": None}, None
 
     def jogar_carta(self, nome_carta, direcao):
-        pilha = self._mesa.get_pilha_por_direcao(direcao)
+        pilha = self._mesa.get_pilha_codigo(direcao)
         carta = self._jogador_local.get_carta_por_nome_imagem(nome_carta)
 
         if self._rodada_atual.comparar_jogador(self._jogador_local):
@@ -179,8 +179,8 @@ class Partida:
                 self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
                 self._mesa.get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
             elif jogada['tipo_jogada'] == 'rei_no_canto' or jogada['tipo_jogada'] == 'jogar':
-                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
-                self._jogador_remoto.remover_carta(self._mesa.get_baralho().get_carta_codigo(jogada['carta']))
+                self._jogador_remoto.remover_carta((self._mesa.get_cartas_codigo(jogada['carta']))[-1])
+                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['carta']))
             elif jogada['tipo_jogada'] == 'passar':
                 nova_rodada = Rodada()
                 self.set_rodada_atual(nova_rodada)

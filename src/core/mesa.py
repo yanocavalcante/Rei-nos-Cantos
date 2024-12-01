@@ -68,13 +68,3 @@ class Mesa:
         for codc in lista_codc:
             lista_cartas.append(self._baralho.get_carta_codigo(codc))
         return lista_cartas
-    
-    def get_pilha_por_direcao(self, direcao):
-        if direcao == 'Norte':
-            return self._pilhas[0]
-        if direcao == 'Sul':
-            return self._pilhas[1]
-        if direcao == 'Leste':
-            return self._pilhas[2]
-        if direcao == 'Oeste':
-            return self._pilhas[3]
