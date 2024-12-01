@@ -8,7 +8,10 @@ class Carta:
         pass
 
     def verificar_cor_carta(self) -> str:
-        pass
+        if self._naipe.value == 'Hearts' or self._naipe.value == 'Diamonds':
+            return 'Vermelho'
+        else:
+            return "Preto"
 
     def get_numero(self) -> int:
         return self._numero
