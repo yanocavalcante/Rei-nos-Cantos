@@ -197,10 +197,11 @@ class PlayerInterface(DogPlayerInterface):
             label.pack(side=tk.LEFT, padx=5)
     
     def buy_card(self):
-        self.update_player_turn_label("é sua vez de jogar")
+        self.update_player_turn_label("compre uma carta")
         dicionario, compra = self._partida.comprar_carta()
         messagebox.showinfo("Ação", dicionario['mensagem'])
         self.atualizar_mao()
+        self.update_player_turn_label("é sua vez de jogar")
         if compra is not None:
             self._dog_server_interface.send_move(compra)
 
