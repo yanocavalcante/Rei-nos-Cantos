@@ -16,13 +16,20 @@ class PlayerInterface(DogPlayerInterface):
 
         self._base_dir = os.path.dirname(os.path.abspath(__file__))
 
+        # Frame superior para o player_turn_label
+        self._top_frame = tk.Frame(self._root, bg='darkgreen')
+        self._top_frame.pack(side=tk.TOP, fill=tk.X)
+
+        # Frame central para os cards
         self._center_frame = tk.Frame(self._root, bg='darkgreen')
-        self._center_frame.pack(expand=True)  
+        self._center_frame.pack(expand=True)
+
+        # Frame inferior para o player_hand_frame
+        self._bottom_frame = tk.Frame(self._root, bg='darkgreen')
+        self._bottom_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
         self._card_images = self.load_card_images()
-
         self._dog_server_interface = DogActor()
-        
         self._partida = Partida()
         
         self.show_welcome_screen()
@@ -85,10 +92,18 @@ class PlayerInterface(DogPlayerInterface):
 
     def create_game_widgets(self):
         self.card_frames = {}
-        for direction in ['Norte', 'Sul', 'Leste', 'Oeste']:
+        for direction in ['0', '1', '2', '3']:
             frame = tk.Frame(self._center_frame, width=150, height=100, relief=tk.RAISED)
-            frame.grid(row={'Norte': 1, 'Sul': 3, 'Leste': 2, 'Oeste': 2}[direction],
-                        column={'Norte': 2, 'Sul': 2, 'Leste': 3, 'Oeste': 1}[direction], pady=10)
+            
+            if direction == '0':
+                frame.grid(row=0, column=2, rowspan=2, pady=10)
+            elif direction == '1':
+                frame.grid(row=3, column=2, rowspan=2, pady=10)
+            elif direction == '2':
+                frame.grid(row=2, column=3, columnspan=2, pady=10)
+            elif direction == '3':
+                frame.grid(row=2, column=0, columnspan=2, pady=10)
+
             self.card_frames[direction] = frame
 
         self.place_initial_cards()
@@ -96,21 +111,6 @@ class PlayerInterface(DogPlayerInterface):
 
         self.buy_button = tk.Button(self._center_frame, text="Comprar Carta", command=self.buy_card, bg="#f81313")
         self.buy_button.grid(row=2, column=2)
-
-        self.place_card_button = tk.Button(self._center_frame, text="Colocar Carta", command=self.place_card, bg="#f81313")
-        self.place_card_button.grid(row=5, column=0, pady=10)
-
-        self.place_king_button = tk.Button(self._center_frame, text="Colocar Rei no Canto", command=self.place_king, bg="#f81313")
-        self.place_king_button.grid(row=5, column=1, pady=10, padx=(0, 10))
-
-        self.move_card_button = tk.Button(self._center_frame, text="Manipular Cartas", command=self.move_card, bg="#f81313")
-        self.move_card_button.grid(row=5, column=2, pady=10, padx=(0, 10))
-
-        self.move_card_button = tk.Button(self._center_frame, text="Passar a Vez", command=self.pass_turn, bg="#f81313")
-        self.move_card_button.grid(row=5, column=3, pady=10, padx=(0, 10))
-
-        self.give_up_button = tk.Button(self._center_frame, text="Desistir da Partida", command=self.show_welcome_screen, bg="#f81313")
-        self.give_up_button.grid(row=5, column=4, pady=10)
     
     def get_codigo_cartas(self, cartas):
         nome_correto_cartas = []
@@ -131,18 +131,8 @@ class PlayerInterface(DogPlayerInterface):
         naipe = letra_para_naipe.get(letra_naipe, "Unknown")
         return f"{numero}_of_{naipe}"
     
-    def get_direcao_pilha(self, codigo_pilha):
-        direcao_pilha = {
-            '0': 'Norte',
-            '1': 'Sul',
-            '2': 'Leste',
-            '3': 'Oeste',
-        }
-        direcao = direcao_pilha.get(codigo_pilha, "Unknown")
-        return direcao
-    
     def place_initial_cards(self):
-        directions = ['Norte', 'Sul', 'Leste', 'Oeste']
+        directions = ['0', '1', '2', '3']
         pilhas_mesa = self._partida._mesa._pilhas[:4]
         cartas_mesa = []
 
@@ -154,7 +144,7 @@ class PlayerInterface(DogPlayerInterface):
         for i, direction in enumerate(directions):
             card_image = self._card_images[nome_png_cartas[i]]
 
-            if direction in ['Leste', 'Oeste']:
+            if direction in ['2', '3']:
                 pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_png_cartas[i]}.png"))
                 pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
                 rotated_image = pil_image.rotate(90, expand=True)
@@ -169,21 +159,35 @@ class PlayerInterface(DogPlayerInterface):
         self.atualizar_mao()
 
     def atualizar_mao(self):
+        for widget in self._bottom_frame.winfo_children():
+            widget.destroy()
+
+        self.place_card_button = tk.Button(self._bottom_frame, text="Colocar Carta", command=self.place_card, bg="#f81313")
+        self.place_card_button.grid(row=0, column=0, padx=10, pady=5, sticky="w")
+
+        self.place_king_button = tk.Button(self._bottom_frame, text="Colocar Rei no Canto", command=self.place_king, bg="#f81313")
+        self.place_king_button.grid(row=0, column=1, padx=10, pady=5, sticky="w")
+
+        self.move_card_button = tk.Button(self._bottom_frame, text="Manipular Cartas", command=self.move_card, bg="#f81313")
+        self.move_card_button.grid(row=0, column=2, padx=10, pady=5, sticky="w")
+
+        self.pass_turn_button = tk.Button(self._bottom_frame, text="Passar a Vez", command=self.pass_turn, bg="#f81313")
+        self.pass_turn_button.grid(row=0, column=3, padx=10, pady=5, sticky="w")
+
+        self.give_up_button = tk.Button(self._bottom_frame, text="Desistir da Partida", command=self.show_welcome_screen, bg="#f81313")
+        self.give_up_button.grid(row=0, column=4, padx=10, pady=5, sticky="w")
+
+        self.player_hand_frame = tk.Frame(self._bottom_frame, bg='darkgreen')
+        self.player_hand_frame.grid(row=1, column=0, columnspan=3, pady=5)  # Cartas ficam abaixo dos botões
+
         cartas_mao_jogador = self._partida._jogador_local._cartas
         nome_png_cartas_jogador = self.get_codigo_cartas(cartas_mao_jogador)
 
-        if hasattr(self, 'player_hand_frame'):
-            self.player_hand_frame.destroy() 
-
-        self.player_hand_frame = tk.Frame(self._center_frame, bg='darkgreen')  
-        self.player_hand_frame.grid(row=6, column=0, columnspan=4, pady=20)
-
         for card in nome_png_cartas_jogador:
             card_image = self._card_images[card]
-            label = tk.Label(self.player_hand_frame, image=card_image, bg='white')  
-            label.carta_nome = card 
-            label.pack(side=tk.LEFT, padx=5, pady=5)
-
+            label = tk.Label(self.player_hand_frame, image=card_image, bg='white')
+            label.carta_nome = card
+            label.pack(side=tk.LEFT, padx=5)
     
     def buy_card(self):
         self.update_player_turn_label("é sua vez de jogar")
@@ -238,24 +242,46 @@ class PlayerInterface(DogPlayerInterface):
         messagebox.showinfo("Ação", dicionario['mensagem'])
         
         if jogar_carta is not None:
-            nome_carta = self.get_nome_carta(jogar_carta['carta'])
-            print(nome_carta)
-            direcao_pilha = self.get_direcao_pilha(jogar_carta['pilha_adiciona'])
-            print(direcao_pilha)
-
-            card_image = self._card_images[nome_carta]
-
-            offset_x = 0 
-            offset_y = -15  
-
-            label = tk.Label(self.card_frames[direcao_pilha], image=card_image)
-            label.image = card_image  
-            label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
-
+            self.place_card_interface(jogar_carta)
             self.atualizar_mao()
             self._dog_server_interface.send_move(jogar_carta)
 
         self.update_player_turn_label("é sua vez de jogar")
+
+    def place_card_interface(self, jogar_carta):
+        nome_carta = self.get_nome_carta(jogar_carta['carta'])
+        direcao_pilha = jogar_carta['pilha_adiciona']
+
+        card_image = self._card_images[nome_carta]
+        if direcao_pilha in ['2', '3']:
+            pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_carta}.png"))
+            pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
+            rotated_image = pil_image.rotate(90, expand=True)
+            card_image = ImageTk.PhotoImage(rotated_image)
+
+        existing_cards = self.card_frames[direcao_pilha].winfo_children()
+        x_offset_increment = 5 
+        y_offset_increment = 5   
+        if direcao_pilha in ['3']:
+            offset_x = 15
+            offset_y = 0
+            offset_x += len(existing_cards) * x_offset_increment
+        if direcao_pilha in ['1']:
+            offset_x = 0
+            offset_y = -15
+            offset_y -= len(existing_cards) * y_offset_increment
+        if direcao_pilha in ['0']:
+            offset_x = 0
+            offset_y = 15
+            offset_y += len(existing_cards) * y_offset_increment
+        else:
+            offset_x = -15
+            offset_y = 0
+            offset_x -= len(existing_cards) * y_offset_increment
+
+        label = tk.Label(self.card_frames[direcao_pilha], image=card_image)
+        label.image = card_image  
+        label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
 
 
     def move_card(self):
@@ -293,7 +319,7 @@ class PlayerInterface(DogPlayerInterface):
                 messagebox.showinfo(message=message)
 
                 self.clear_screen()
-                self.player_turn_label = tk.Label(self._center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
+                self.player_turn_label = tk.Label(self._top_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
                 self.player_turn_label.grid(row=0, column=0, pady=10)
                 self.update_player_turn_label("compre uma carta")
 
@@ -310,7 +336,7 @@ class PlayerInterface(DogPlayerInterface):
         message = start_status.get_message()
         messagebox.showinfo(message=message)
         self.clear_screen()
-        self.player_turn_label = tk.Label(self._center_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
+        self.player_turn_label = tk.Label(self._top_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
         self.player_turn_label.grid(row=0, column=0, pady=10)
         self.update_player_turn_label("é a vez do seu oponente jogar")
 
@@ -320,6 +346,9 @@ class PlayerInterface(DogPlayerInterface):
         self._partida.receber_jogada(a_move)
         if a_move['tipo_jogada'] == 'inicio':
             self.create_game_widgets()
+        if a_move['tipo_jogada'] == 'jogar':
+            self.place_card_interface(a_move)
+        
     
 
     def receber_notificacao_de_abandono(self):
