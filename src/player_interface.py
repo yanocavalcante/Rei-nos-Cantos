@@ -106,6 +106,13 @@ class PlayerInterface(DogPlayerInterface):
 
             self.card_frames[direction] = frame
 
+        for canto in ['C0', 'C1', 'C2', 'C3']:
+            frame = tk.Frame(self._center_frame, width=150, height=100, relief=tk.RAISED)
+            frame.grid(row={'C0': 1, 'C1': 3, 'C2': 3, 'C3': 1}[canto],
+                        column={'C0': 3, 'C1': 3, 'C2': 1, 'C3': 1}[canto], pady=10)
+            self.card_frames[canto] = frame
+
+
         self.place_initial_cards()
         self.load_reverse_card_image()
 
@@ -294,8 +301,14 @@ class PlayerInterface(DogPlayerInterface):
             self._dog_server_interface.send_move(mover)
 
     def place_king(self):
-        messagebox.showinfo("Ação", "Você colocou um Rei em um canto!")
-        self.update_player_turn_label("é sua vez de jogar")
+        self.update_player_turn_label("selecione um rei para jogar na mesa!")
+        carta = self.selecionar_carta_mao()
+        self.update_player_turn_label("selecione uma pilha de destino")
+        pilha = self.selecionar_pilha()
+        dicionario, rei_no_canto = self._partida.colocar_rei(carta, pilha)
+        messagebox.showinfo("Ação", dicionario['mensagem'])
+        if rei_no_canto is not None:
+            self._dog_server_interface.send_move(rei_no_canto)
 
     def pass_turn(self):
         dicionario, passar = self._partida.passar_a_vez()
