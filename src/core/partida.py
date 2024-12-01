@@ -106,11 +106,11 @@ class Partida:
                 if pilha.verifica_colocacao_carta(carta):
                     self._jogador_local.remover_carta(carta)
                     pilha.adicionar_cartas_pilha([carta])
-                    print(pilha._cartas)
+                    
                     jogar_carta = {
                         'tipo_jogada': "jogar",
                         'carta': carta.get_codigo(),
-                        'pilha_adiciona': pilha,
+                        'pilha_adiciona': pilha.get_codigo(),
                         'match_status': "next",
                     }
                     return {"mensagem": "Colocou carta na mesa!", "carta": None}, jogar_carta

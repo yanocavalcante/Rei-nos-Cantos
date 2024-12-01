@@ -125,6 +125,29 @@ class PlayerInterface(DogPlayerInterface):
             nome_correto_cartas.append(f'{carta.get_numero()}_of_{carta._naipe.value.lower()}')
         return nome_correto_cartas
     
+    def get_nome_carta(self, codigo_carta):
+        letra_para_naipe = {
+            "H": 'hearts',
+            "S": 'spades',
+            "D": 'diamonds',
+            "C": 'clubs',
+        }
+        letra_naipe = codigo_carta[0]
+        numero = codigo_carta[1:]
+        
+        naipe = letra_para_naipe.get(letra_naipe, "Unknown")
+        return f"{numero}_of_{naipe}"
+    
+    def get_direcao_pilha(self, codigo_pilha):
+        direcao_pilha = {
+            '0': 'Norte',
+            '1': 'Sul',
+            '2': 'Leste',
+            '3': 'Oeste',
+        }
+        direcao = direcao_pilha.get(codigo_pilha, "Unknown")
+        return direcao
+    
     def place_initial_cards(self):
         directions = ['Norte', 'Sul', 'Leste', 'Oeste']
         pilhas_mesa = self._partida._mesa._pilhas[:4]
@@ -237,13 +260,29 @@ class PlayerInterface(DogPlayerInterface):
         carta_selecionada = self.selecionar_carta_mao()
         self.update_player_turn_label("selecione uma pilha de destino")
         pilha_selecionada = self.selecionar_pilha()
-        print(pilha_selecionada)
         dicionario, jogar_carta = self._partida.jogar_carta(carta_selecionada, pilha_selecionada)
-        print(self._partida._mesa._pilhas[0])
         messagebox.showinfo("Ação", dicionario['mensagem'])
-        self.atualizar_mao()
+        
         if jogar_carta is not None:
+            nome_carta = self.get_nome_carta(jogar_carta['carta'])
+            print(nome_carta)
+            direcao_pilha = self.get_direcao_pilha(jogar_carta['pilha_adiciona'])
+            print(direcao_pilha)
+
+            card_image = self._card_images[nome_carta]
+
+            offset_x = 0 
+            offset_y = -15  
+
+            label = tk.Label(self.card_frames[direcao_pilha], image=card_image)
+            label.image = card_image  
+            label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
+
+            self.atualizar_mao()
             self._dog_server_interface.send_move(jogar_carta)
+
+        self.update_player_turn_label("é sua vez de jogar")
+
 
     def move_card(self):
         cartas = self.selecionar_cartas_mesa()
