@@ -194,24 +194,24 @@ class PlayerInterface(DogPlayerInterface):
         return self.variavel_carta_selecionada.get()
     
     def selecionar_pilha(self):
-        self.selected_pile_var = tk.StringVar()  # Variável para armazenar a direção da pilha selecionada
+        self.pilha_selecionada = tk.StringVar()
 
-        def on_pile_click(event):
-            for direction, frame in self.card_frames.items():
-                if frame == event.widget:
-                    self.selected_pile_var.set(direction)  # Define a direção selecionada
-                    messagebox.showinfo("Pilha Selecionada", f"Você selecionou a pilha: {direction}")
+        def on_button_click(direction):
+            """Define a direção selecionada e destrói os botões."""
+            self.pilha_selecionada.set(direction)
+            for button in self.selection_buttons.values():
+                button.destroy()
 
-        # Vincula o evento de clique a cada card_frame
+        self.selection_buttons = {}
+
         for direction, frame in self.card_frames.items():
-            frame.bind("<Button-1>", on_pile_click)
-            frame.direction = direction
+            button = tk.Button(frame, text="Selecionar", command=lambda dir=direction: on_button_click(dir))
+            button.pack()
+            self.selection_buttons[direction] = button
 
-        # Aguarda até que o usuário clique em uma pilha
-        self._root.wait_variable(self.selected_pile_var)
+        self._root.wait_variable(self.pilha_selecionada)
 
-        # Retorna a direção da pilha selecionada
-        return self.selected_pile_var.get()
+        return self.pilha_selecionada.get()
 
     def selecionar_pilha(self):
         self.pilha_selecionada = tk.StringVar()
@@ -237,8 +237,13 @@ class PlayerInterface(DogPlayerInterface):
         carta_selecionada = self.selecionar_carta_mao()
         self.update_player_turn_label("selecione uma pilha de destino")
         pilha_selecionada = self.selecionar_pilha()
+        print(pilha_selecionada)
         dicionario, jogar_carta = self._partida.jogar_carta(carta_selecionada, pilha_selecionada)
+        print(self._partida._mesa._pilhas[0])
         messagebox.showinfo("Ação", dicionario['mensagem'])
+        self.atualizar_mao()
+        if jogar_carta is not None:
+            self._dog_server_interface.send_move(jogar_carta)
 
     def move_card(self):
         cartas = self.selecionar_cartas_mesa()
