@@ -220,7 +220,7 @@ class PlayerInterface(DogPlayerInterface):
             self._dog_server_interface.send_move(mover)
 
     def place_king(self):
-        self.update_player_turn_label("é sua vez de jogar")
+        self.update_player_turn_label("selecione um rei para jogar na mesa!")
         carta = self.selecionar_carta_mao()
         self.update_player_turn_label("selecione uma pilha de destino")
         pilha = self.selecionar_destino()
