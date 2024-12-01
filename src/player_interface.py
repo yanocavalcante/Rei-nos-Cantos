@@ -180,7 +180,7 @@ class PlayerInterface(DogPlayerInterface):
     def place_king(self):
         messagebox.showinfo("Ação", "Você colocou um Rei em um canto!")
         self.update_player_turn_label("é sua vez de jogar")
-        carta = self.selecionar_carta()
+        carta = self.selecionar_carta_mao()
         pilha = self.selecionar_destino()
         dicionario, rei_no_canto = self._partida.colocar_rei(carta, pilha)
 
