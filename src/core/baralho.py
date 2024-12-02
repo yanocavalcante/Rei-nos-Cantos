@@ -22,7 +22,8 @@ class Baralho:
         return self._cartas
     
     def get_carta_codigo(self, codp) -> Carta:      #Retorna uma instância de carta que tenha o código passado
+        print("Cartas do Baralho:", self._cartas)
         for carta in self._cartas:
-            if carta._codigo == codp:
+            if carta.get_codigo() == codp:
                 return carta 
 
