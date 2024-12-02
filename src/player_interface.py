@@ -89,7 +89,6 @@ class PlayerInterface(DogPlayerInterface):
     def update_player_turn_label(self, message):
         self.player_turn_label.config(text=f"{self.player_name}, {message}")
 
-
     def create_game_widgets(self):
         self.card_frames = {}
         for direction in ['0', '1', '2', '3']:
@@ -109,8 +108,10 @@ class PlayerInterface(DogPlayerInterface):
         for canto in ['C0', 'C1', 'C2', 'C3']:
             frame = tk.Frame(self._center_frame, width=150, height=100, relief=tk.RAISED)
             frame.grid(row={'C0': 1, 'C1': 3, 'C2': 3, 'C3': 1}[canto],
-                        column={'C0': 3, 'C1': 3, 'C2': 1, 'C3': 1}[canto], pady=10)
+                    column={'C0': 3, 'C1': 3, 'C2': 1, 'C3': 1}[canto], pady=10)
+            frame.grid_propagate(False)  # Desativa a propagação do tamanho
             self.card_frames[canto] = frame
+
 
 
         self.place_initial_cards()
@@ -242,7 +243,7 @@ class PlayerInterface(DogPlayerInterface):
 
         for direction, frame in self.card_frames.items():
             button = tk.Button(frame, text="Selecionar", command=lambda dir=direction: on_button_click(dir))
-            button.pack()
+            button.place(relx=0.5, rely=0.5, anchor="center")
             self.selection_buttons[direction] = button
 
         self._root.wait_variable(self.pilha_selecionada)
@@ -250,9 +251,9 @@ class PlayerInterface(DogPlayerInterface):
         return self.pilha_selecionada.get()
 
     def place_card(self):
-        self.update_player_turn_label("selecione uma carta para jogar na mesa")
+        self.update_player_turn_label("selecione uma carta para jogar na mesa!")
         carta_selecionada = self.selecionar_carta_mao()
-        self.update_player_turn_label("selecione uma pilha de destino")
+        self.update_player_turn_label("selecione uma pilha de destino!")
         pilha_selecionada = self.selecionar_pilha()
         dicionario, jogar_carta = self._partida.jogar_carta(carta_selecionada, pilha_selecionada)
         messagebox.showinfo("Ação", dicionario['mensagem'])
@@ -265,10 +266,10 @@ class PlayerInterface(DogPlayerInterface):
                 self._root.destroy()
             self._dog_server_interface.send_move(jogar_carta)
 
-        self.update_player_turn_label("é sua vez de jogar")
+        self.update_player_turn_label("é sua vez de jogar!")
 
-    def place_card_interface(self, jogar_carta):
-        nome_carta = self.get_nome_carta(jogar_carta['carta'])
+    def place_card_interface(self, jogar_carta: dict):
+        nome_carta = self.get_nome_carta(jogar_carta['cartas'])
         direcao_pilha = jogar_carta['pilha_adiciona']
 
         card_image = self._card_images[nome_carta]
@@ -279,8 +280,8 @@ class PlayerInterface(DogPlayerInterface):
             card_image = ImageTk.PhotoImage(rotated_image)
 
         existing_cards = self.card_frames[direcao_pilha].winfo_children()
-        x_offset_increment = 5 
-        y_offset_increment = 5   
+        x_offset_increment = 10 
+        y_offset_increment = 10  
         if direcao_pilha in ['3']:
             offset_x = 15
             offset_y = 0
@@ -302,7 +303,6 @@ class PlayerInterface(DogPlayerInterface):
         label.image = card_image  
         label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
 
-
     def move_card(self):
         cartas = self.selecionar_cartas_mesa()
         pilha1 = None
@@ -313,17 +313,63 @@ class PlayerInterface(DogPlayerInterface):
             self._dog_server_interface.send_move(mover)
 
     def place_king(self):
-        self.update_player_turn_label("selecione um rei para jogar na mesa!")
-        carta = self.selecionar_carta_mao()
-        self.update_player_turn_label("selecione uma pilha de destino")
-        pilha = self.selecionar_pilha()
-        dicionario, rei_no_canto = self._partida.colocar_rei(carta, pilha)
+        self.update_player_turn_label("selecione um Rei para jogar na mesa!")
+        carta_selecionada = self.selecionar_carta_mao()
+        self.update_player_turn_label("selecione um Canto de destino!")
+        pilha_selecionada = self.selecionar_pilha()
+        dicionario, rei_no_canto = self._partida.colocar_rei(carta_selecionada, pilha_selecionada)
         messagebox.showinfo("Ação", dicionario['mensagem'])
+        
         if rei_no_canto is not None:
             if rei_no_canto['venceu'] == 'True':
                 messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
                 self._root.destroy()
+            self.place_king_interface(rei_no_canto)
+            self.atualizar_mao()
             self._dog_server_interface.send_move(rei_no_canto)
+
+    def place_king_interface(self, rei_no_canto: dict):
+        nome_carta = self.get_nome_carta(rei_no_canto['cartas'])
+        codp = rei_no_canto['pilha_adiciona']
+        card_image = self._card_images[nome_carta]
+
+        if codp in ['C2', 'C3']:
+            pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_carta}.png"))
+            pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
+            rotated_image = pil_image.rotate(90, expand=True)
+            card_image = ImageTk.PhotoImage(rotated_image)
+        
+        elif codp in ['C0', 'C1']:
+            pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_carta}.png"))
+            pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
+            rotated_image = pil_image.rotate(270, expand=True)
+            card_image = ImageTk.PhotoImage(rotated_image)
+
+        existing_cards = self.card_frames[codp].winfo_children()
+        x_offset_increment = 10
+        y_offset_increment = 10  
+        if codp in ['C3']:
+            offset_x = 15
+            offset_y = 0
+            offset_x += len(existing_cards) * x_offset_increment
+
+        elif codp in ['C1']:
+            offset_x = 0
+            offset_y = -15
+            offset_y -= len(existing_cards) * y_offset_increment
+
+        elif codp in ['C0']:
+            offset_x = 0
+            offset_y = 15
+            offset_y += len(existing_cards) * y_offset_increment
+        else:
+            offset_x = -15
+            offset_y = 0
+            offset_x -= len(existing_cards) * y_offset_increment
+
+        label = tk.Label(self.card_frames[codp], image=card_image)
+        label.image = card_image  
+        label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
 
     def pass_turn(self):
         dicionario, passar = self._partida.passar_a_vez()
@@ -372,14 +418,20 @@ class PlayerInterface(DogPlayerInterface):
         self.update_player_turn_label("é a vez do seu oponente jogar")
 
         # status_jogo = self._partida.obtem_status()    #Continuo sem saber pra que serve
+
     def receive_move(self, a_move):
         print(a_move)
         self._partida.receber_jogada(a_move)
         if a_move['tipo_jogada'] == 'inicio':
             self.create_game_widgets()
-        if a_move['tipo_jogada'] == 'jogar':
+
+        elif a_move['tipo_jogada'] == 'jogar':
             self.place_card_interface(a_move)
-        if a_move['tipo_jogada'] == 'passar':
+
+        elif a_move['tipo_jogada'] == 'rei_no_canto':
+            self.place_king_interface(a_move)
+
+        elif a_move['tipo_jogada'] == 'passar':
             self.update_player_turn_label("compre uma carta")
         if a_move['tipo_jogada'] == 'desistir':
             messagebox.showinfo("Ação", "Seu oponente desistiu da partida")

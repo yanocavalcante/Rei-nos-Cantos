@@ -14,8 +14,17 @@ class Mesa:
             canto = Pilha(codp)
             cantos.append(canto)
         self._pilhas.extend(cantos)
+    
+    def get_monte(self) -> Pilha:
+        return self._monte
+    
+    def get_pilhas(self) -> list:
+        return self._pilhas
 
-    def limpar_mesa(self):
+    def get_baralho(self) -> list:
+        return self._baralho
+
+    def limpar_mesa(self):      #RETIRAR NO DIAGRAMA
         pass
 
     def comprar_carta_monte(self) -> object:
@@ -46,12 +55,6 @@ class Mesa:
             jogador.adicionar_cartas([lista_cartas.pop(0)])
         return lista_cartas
     
-    def get_monte(self) -> Pilha:
-        return self._monte
-    
-    def get_pilhas(self) -> list:
-        return self._pilhas
-    
     def get_pilha_codigo(self, codp) -> Pilha:      #Retorna uma instância de pilha baseada no código fornecido
         if codp == "M":
             return self.get_monte()
@@ -59,12 +62,11 @@ class Mesa:
             for pilha in self._pilhas:
                 if pilha.get_codigo() == codp:
                     return pilha
-    
-    def get_baralho(self) -> list:
-        return self._baralho
 
     def get_cartas_codigo(self, lista_codc) -> list:
         lista_cartas = []
         for codc in lista_codc:
+            print("Código da Carta:", codc)
             lista_cartas.append(self.get_baralho().get_carta_codigo(codc))
+        print("Lista Retornada pelo get_cartas_codigo()", lista_cartas)
         return lista_cartas
