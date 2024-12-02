@@ -458,9 +458,11 @@ class PlayerInterface(DogPlayerInterface):
         print("Clicou no Botão Iniciar Jogo")
         if self._partida.get_partida_em_andamento() == False:
             start_status = self._dog_server_interface.start_match(2)
+            print("Start Status:", start_status)
 
             if start_status.get_code() == "1" or start_status.get_code() == "0":
                 message = start_status.get_message()
+                messagebox.showinfo(message=message)
             
             else: 
                 message = start_status.get_message()
