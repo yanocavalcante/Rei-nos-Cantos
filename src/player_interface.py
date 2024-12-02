@@ -286,7 +286,7 @@ class PlayerInterface(DogPlayerInterface):
 
             existing_cards = len(self.card_frames[direcao_pilha].winfo_children())
             if direcao_pilha in ['C3','3', 'C2']:
-                offset_x = 15         
+                offset_x = -15         
                 offset_y = 0
                 offset_x -= existing_cards * x_offset_increment
 
@@ -356,10 +356,14 @@ class PlayerInterface(DogPlayerInterface):
         return carta_selecionada.get()
 
     def remove_cartas(self, pilha, quantidade):
-        print(self.card_frames[pilha].winfo_children())
+        children = self.card_frames[pilha].winfo_children()
+        print(children)
         for i in range(quantidade):
-            self.card_frames[pilha].winfo_children()[-1].destroy()
-
+            if children:
+                children[-1].destroy()
+                children = self.card_frames[pilha].winfo_children()  # Atualizar a lista de filhos
+            else:
+                break  
     
     def move_card(self):
         self.update_player_turn_label("selecione uma pilha para retirar cartas")
@@ -500,7 +504,13 @@ class PlayerInterface(DogPlayerInterface):
 
         elif a_move['tipo_jogada'] == 'passar':
             self.update_player_turn_label("compre uma carta")
-
+        
+        elif a_move['tipo_jogada'] == 'mover':
+            if type(a_move['cartas']) == list:
+                self.remove_cartas(a_move['pilha_remove'], len(a_move['cartas']))
+            else:
+                self.remove_cartas(a_move['pilha_remove'], 1)
+            self.place_card_interface(a_move)
         
     def receive_withdrawal_notification(self):
         self._partida.set_partida_em_andamento

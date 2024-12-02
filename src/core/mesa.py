@@ -63,8 +63,11 @@ class Mesa:
                 if pilha.get_codigo() == codp:
                     return pilha
 
-    def get_cartas_codigo(self, lista_codc) -> list:
-        lista_cartas = []
-        for codc in lista_codc:
-            lista_cartas.append(self.get_baralho().get_carta_codigo(codc))
-        return lista_cartas
+    def get_cartas_codigo(self, lista_codc):
+        if type(lista_codc) == list:
+            lista_cartas = []
+            for codc in lista_codc:
+                lista_cartas.append(self.get_baralho().get_carta_codigo(codc))
+            return lista_cartas
+        else:
+            return self.get_baralho().get_carta_codigo(lista_codc)

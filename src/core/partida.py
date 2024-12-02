@@ -237,12 +237,14 @@ class Partida:
             self._jogador_remoto.adicionar_cartas(self._mesa.get_cartas_codigo(jogada['cartas_jogador_local']))   #Lembrar que os pontos de vista sempre se invertem
         else:
             if jogada['tipo_jogada'] == 'mover':
+                print('receber mover', self._mesa.get_cartas_codigo(jogada['cartas']))
                 self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
                 self._mesa.get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
             
             elif jogada['tipo_jogada'] == 'rei_no_canto' or jogada['tipo_jogada'] == 'jogar':
-                self._jogador_remoto.remover_carta((self._mesa.get_cartas_codigo(jogada['cartas']))[-1])
-                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha([self._mesa.get_cartas_codigo(jogada['cartas'])])
+                print('receber jogar ou rei no canto', self._mesa.get_cartas_codigo(jogada['cartas']))
+                self._jogador_remoto.remover_carta((self._mesa.get_cartas_codigo(jogada['cartas'])))
+                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
             
                 if jogada['venceu'] == 'True':
                     self.set_partida_em_andamento()
