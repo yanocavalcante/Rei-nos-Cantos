@@ -206,7 +206,6 @@ class PlayerInterface(DogPlayerInterface):
             self._root.destroy()  
     
     def buy_card(self):
-        self.update_player_turn_label("compre uma carta")
         dicionario, compra = self._partida.comprar_carta()
         messagebox.showinfo("Ação", dicionario['mensagem'])
         self.atualizar_mao()
@@ -263,8 +262,10 @@ class PlayerInterface(DogPlayerInterface):
             self.atualizar_mao()
             if jogar_carta['venceu'] == 'True':
                 messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
+                self._dog_server_interface.send_move(jogar_carta)
                 self._root.destroy()
-            self._dog_server_interface.send_move(jogar_carta)
+            else:
+                self._dog_server_interface.send_move(jogar_carta)
 
         self.update_player_turn_label("é sua vez de jogar!")
 
@@ -380,6 +381,7 @@ class PlayerInterface(DogPlayerInterface):
 
         self.place_card_interface(mover)
         messagebox.showinfo("Ação", dicionario['mensagem'])
+        self.update_player_turn_label("é sua vez de jogar")
         if mover is not None:
             self._dog_server_interface.send_move(mover)
 
@@ -392,12 +394,15 @@ class PlayerInterface(DogPlayerInterface):
         messagebox.showinfo("Ação", dicionario['mensagem'])
         
         if rei_no_canto is not None:
-            if rei_no_canto['venceu'] == 'True':
-                messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
-                self._root.destroy()
             self.place_king_interface(rei_no_canto)
             self.atualizar_mao()
-            self._dog_server_interface.send_move(rei_no_canto)
+            if rei_no_canto['venceu'] == 'True':
+                messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
+                self._dog_server_interface.send_move(rei_no_canto)
+                self._root.destroy()
+            else:
+                self.update_player_turn_label("é sua vez de jogar")
+                self._dog_server_interface.send_move(rei_no_canto)
 
     def place_king_interface(self, rei_no_canto: dict):
         nome_carta = self.get_nome_carta(rei_no_canto['cartas'])
