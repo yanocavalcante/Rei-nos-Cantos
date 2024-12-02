@@ -10,9 +10,10 @@ class Pilha:
         return self._cartas
 
     def verifica_colocacao_carta(self, carta) -> bool:
+        print("Cartas da Pilha:", self._cartas)
         if self._cartas == []:
             return True
-        if self._cartas[-1].get_numero() == carta.get_numero() + 1:
+        elif self._cartas[-1].get_numero() == carta.get_numero() + 1:
             if self._cartas[-1].verificar_cor_carta() != carta.verificar_cor_carta():
                 return True
         return False
@@ -21,9 +22,12 @@ class Pilha:
         if self._codigo_pilha[0] == "C":
             return True
 
-    def adicionar_cartas_pilha(self, lista_cartas: list):
-        for carta in lista_cartas:
-            self._cartas.append(carta)
+    def adicionar_cartas_pilha(self, carta_s):
+        if type(carta_s) == list:
+            for carta in carta_s:
+                self._cartas.append(carta)
+        else:
+            self._cartas.append(carta_s)
 
     def retirar_cartas_pilha(self, lista_cartas: list):
         for carta_a_retirar in lista_cartas:

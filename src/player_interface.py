@@ -242,7 +242,7 @@ class PlayerInterface(DogPlayerInterface):
         self.selection_buttons = {}
 
         for direction, frame in self.card_frames.items():
-            button = tk.Button(frame, text="Selecionar", command=lambda dir=direction: on_button_click(dir))
+            button = tk.Button(frame, text=f"Selecionar - Pilha{direction}", command=lambda dir=direction: on_button_click(dir))
             button.place(relx=0.5, rely=0.5, anchor="center")
             self.selection_buttons[direction] = button
 
@@ -269,45 +269,112 @@ class PlayerInterface(DogPlayerInterface):
         self.update_player_turn_label("é sua vez de jogar!")
 
     def place_card_interface(self, jogar_carta: dict):
-        nome_carta = self.get_nome_carta(jogar_carta['cartas'])
+        x_offset_increment = 10 
+        y_offset_increment = 10
+        if type(jogar_carta['cartas']) == list:
+            tamanho = len(jogar_carta['cartas'])
+        else:
+            tamanho = len([jogar_carta['cartas']])
+
         direcao_pilha = jogar_carta['pilha_adiciona']
 
-        card_image = self._card_images[nome_carta]
-        if direcao_pilha in ['2', '3']:
-            pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_carta}.png"))
-            pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
-            rotated_image = pil_image.rotate(90, expand=True)
-            card_image = ImageTk.PhotoImage(rotated_image)
+        for i in range(tamanho):
+            if type(jogar_carta['cartas']) == list:
+                nome_carta = self.get_nome_carta(jogar_carta['cartas'][i])
+            else:
+                nome_carta = self.get_nome_carta([jogar_carta['cartas']][i])
 
-        existing_cards = self.card_frames[direcao_pilha].winfo_children()
-        x_offset_increment = 10 
-        y_offset_increment = 10  
-        if direcao_pilha in ['3']:
-            offset_x = 15
-            offset_y = 0
-            offset_x += len(existing_cards) * x_offset_increment
-        if direcao_pilha in ['1']:
-            offset_x = 0
-            offset_y = -15
-            offset_y -= len(existing_cards) * y_offset_increment
-        if direcao_pilha in ['0']:
-            offset_x = 0
-            offset_y = 15
-            offset_y += len(existing_cards) * y_offset_increment
-        else:
-            offset_x = -15
-            offset_y = 0
-            offset_x -= len(existing_cards) * y_offset_increment
+            existing_cards = len(self.card_frames[direcao_pilha].winfo_children())
+            if direcao_pilha in ['C3','3', 'C2']:
+                offset_x = 15         
+                offset_y = 0
+                offset_x -= existing_cards * x_offset_increment
 
-        label = tk.Label(self.card_frames[direcao_pilha], image=card_image)
-        label.image = card_image  
-        label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
+            elif direcao_pilha in ['1']:
+                offset_y = -15
+                offset_x = 0
+                offset_y -= existing_cards * y_offset_increment
 
+            elif direcao_pilha in ['0']:
+                offset_y = 15
+                offset_x = 0
+                offset_y += existing_cards * y_offset_increment
+
+            else:
+                offset_x = -15
+                offset_y = 0
+                offset_x -= existing_cards * y_offset_increment
+
+            card_image = self._card_images[nome_carta]
+            if direcao_pilha in ['C0','C1','C2','C3','2','3']:
+                pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_carta}.png"))
+                pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
+                rotated_image = pil_image.rotate(90, expand=True)
+                card_image = ImageTk.PhotoImage(rotated_image)
+
+            label = tk.Label(self.card_frames[direcao_pilha], image=card_image)
+            label.image = card_image
+            label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
+    
+    def selecionar_cartas_pilha(self, pilha):
+        """Exibe um modal para selecionar uma carta de uma pilha."""
+        modal = tk.Toplevel(self._root)
+        modal.title("Selecionar Carta")
+        modal.geometry("400x300")
+        modal.configure(bg='darkgreen')
+
+        # Obter as cartas da pilha
+        cartas_pilha = self._partida._mesa.get_pilha_codigo(pilha).get_cartas()
+        nome_cartas = self.get_codigo_cartas(cartas_pilha)
+
+        # Variável para armazenar a carta selecionada
+        carta_selecionada = tk.StringVar()
+
+        # Criação dos botões para cada carta
+        for idx, carta in enumerate(nome_cartas):
+            card_image = self._card_images[carta]
+            frame = tk.Frame(modal, bg='darkgreen')
+            frame.pack(pady=5)
+
+            label = tk.Label(frame, image=card_image, bg='white')
+            label.image = card_image 
+            label.pack(side=tk.LEFT, padx=5)
+
+            button = tk.Button(
+                frame,
+                text="Selecionar",
+                command=lambda c=carta: carta_selecionada.set(c),
+                bg="#f81313",
+                width=15
+            )
+            button.pack(side=tk.RIGHT, padx=5)
+
+        # Aguarda até que o usuário selecione uma carta
+        self._root.wait_variable(carta_selecionada)
+        modal.destroy() 
+
+        return carta_selecionada.get()
+
+    def remove_cartas(self, pilha, quantidade):
+        print(self.card_frames[pilha].winfo_children())
+        for i in range(quantidade):
+            self.card_frames[pilha].winfo_children()[-1].destroy()
+
+    
     def move_card(self):
-        cartas = self.selecionar_cartas_mesa()
-        pilha1 = None
-        pilha2 = self.selecionar_destion()
-        dicionario, mover = self._partida.mover_cartas(cartas, pilha1, pilha2)
+        self.update_player_turn_label("selecione uma pilha para retirar cartas")
+        pilha1 = self.selecionar_pilha()
+
+        # abrir modal que mostra todas as cartas daquela pilha
+        carta = self.selecionar_cartas_pilha(pilha1)
+        self.update_player_turn_label("selecione uma pilha para adicionar as cartas")
+        pilha2 = self.selecionar_pilha()
+        dicionario, mover = self._partida.mover_cartas(carta, pilha1, pilha2)
+        
+        quantidade = len(mover['cartas'])
+        self.remove_cartas(pilha1, quantidade)
+
+        self.place_card_interface(mover)
         messagebox.showinfo("Ação", dicionario['mensagem'])
         if mover is not None:
             self._dog_server_interface.send_move(mover)

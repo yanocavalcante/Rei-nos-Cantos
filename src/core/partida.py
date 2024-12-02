@@ -100,13 +100,22 @@ class Partida:
         else: 
             return False
 
-    def mover_cartas(self, cartas: list[str], pilha1: str, pilha2: str) -> dict:
+    def mover_cartas(self, carta: str, pilha1: str, pilha2: str) -> dict:
+        carta_selecionada = self._mesa._baralho.get_carta_por_nome_imagem(carta)
+        pilha_selecionada_1 = self._mesa.get_pilha_codigo(pilha1)
+        pilha_selecionada_2 = self._mesa.get_pilha_codigo(pilha2)
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
-                if self._mesa.get_pilha_codigo(pilha2).verifica_colocacao_carta(cartas):
+                if self._mesa.get_pilha_codigo(pilha_selecionada_2).verifica_colocacao_carta(carta_selecionada):
+                    index = pilha_selecionada_1.get_cartas().index(carta_selecionada)
+                    print(index)
+                    cartas_selecionadas = pilha_selecionada_1.get_cartas()[index:]
+                    print(cartas_selecionadas)
+                    pilha_selecionada_1.retirar_cartas_pilha(cartas_selecionadas)
+                    pilha_selecionada_2.adicionar_cartas_pilha(cartas_selecionadas)
                     mover = {              
                     'tipo_jogada': "mover",
-                    'cartas': cartas.get_codigo(),
+                    'cartas': self._mesa.get_baralho().get_codigo_cartas(cartas_selecionadas),
                     'pilha_remove': pilha1,
                     'pilha_adiciona': pilha2,
                     'match_status': 'next',
@@ -123,11 +132,13 @@ class Partida:
         pilha = self._mesa.get_pilha_codigo(direcao)
         carta = self._jogador_local.get_carta_por_nome_imagem(nome_carta)
 
+        print(carta)
+
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
                 if pilha.verifica_colocacao_carta(carta):
                     self._jogador_local.remover_carta(carta)
-                    pilha.adicionar_cartas_pilha([carta])
+                    pilha.adicionar_cartas_pilha(carta)
                     if self.avaliar_vencedor(self._jogador_local):
                         jogar_carta = {
                             'tipo_jogada': "jogar",
@@ -181,7 +192,7 @@ class Partida:
                     if pilha.verifica_canto(): 
                         if pilha.verifica_colocacao_carta(carta):
                             self._jogador_local.remover_carta(carta)
-                            pilha.adicionar_cartas_pilha([carta])
+                            pilha.adicionar_cartas_pilha(carta)
                             if self.avaliar_vencedor(self._jogador_local):
                                 rei_no_canto = {              
                                 'tipo_jogada': "rei_no_canto",
@@ -228,7 +239,7 @@ class Partida:
             
             elif jogada['tipo_jogada'] == 'rei_no_canto' or jogada['tipo_jogada'] == 'jogar':
                 self._jogador_remoto.remover_carta((self._mesa.get_cartas_codigo(jogada['cartas']))[-1])
-                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha([self._mesa.get_cartas_codigo([jogada['cartas']])])
+                self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha([self._mesa.get_cartas_codigo(jogada['cartas'])])
             
                 if jogada['venceu'] == 'True':
                     self.set_partida_em_andamento()

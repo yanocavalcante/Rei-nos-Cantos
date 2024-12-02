@@ -43,7 +43,7 @@ class Jogador:
             lista_codigos.append(carta.get_codigo())
         return lista_codigos
     
-    def get_carta_por_nome_imagem(self, nome_imagem_carta: str):
+    def get_carta_por_nome_imagem(self, nome_imagem_carta: str) -> object:
         #formato esperado: "{rank}_of_{suit}"
         rank, suit = nome_imagem_carta.split("_of_")
 
