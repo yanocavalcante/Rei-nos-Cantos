@@ -53,7 +53,7 @@ class Partida:
         self.set_partida_em_andamento()
         desistir = {              
                 'tipo_jogada': "desistir",
-                'match_status': 'next',
+                'match_status': 'interrupted',
                 }
         return desistir
 
