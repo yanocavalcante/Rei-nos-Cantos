@@ -50,7 +50,12 @@ class Partida:
         pass
 
     def desistir(self):
-        pass
+        self.set_partida_em_andamento()
+        desistir = {              
+                'tipo_jogada': "desistir",
+                'match_status': 'next',
+                }
+        return desistir
 
     def comecar_partida(self, jogadores: list):
         pilhas_mesa = self._mesa.get_pilhas()
@@ -226,7 +231,7 @@ class Partida:
                 nova_rodada.set_jogador(self._jogador_local)
                 self.set_rodada_atual(nova_rodada)
             elif jogada['tipo_jogada'] == 'desistir':
-                pass
+                self.set_partida_em_andamento()
 
     def verificar_inicio(self) -> bool:     #APAGAR NO DIAGRAMA
         pass

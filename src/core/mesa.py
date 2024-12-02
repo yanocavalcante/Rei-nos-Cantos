@@ -66,5 +66,5 @@ class Mesa:
     def get_cartas_codigo(self, lista_codc) -> list:
         lista_cartas = []
         for codc in lista_codc:
-            lista_cartas.append(self._baralho.get_carta_codigo(codc))
+            lista_cartas.append(self.get_baralho().get_carta_codigo(codc))
         return lista_cartas
