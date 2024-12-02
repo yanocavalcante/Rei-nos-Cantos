@@ -435,7 +435,7 @@ class PlayerInterface(DogPlayerInterface):
             self.update_player_turn_label("compre uma carta")
         if a_move['tipo_jogada'] == 'desistir':
             messagebox.showinfo("Ação", "Seu oponente desistiu da partida")
-            self.root.destroy() 
+            self._root.destroy() 
         
     def receber_notificacao_de_abandono(self):
         self._partida.set_partida_em_andamento

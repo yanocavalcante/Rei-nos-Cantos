@@ -22,7 +22,6 @@ class Pilha:
             return True
 
     def adicionar_cartas_pilha(self, lista_cartas: list):
-        print("CArtas Adicionadas:", lista_cartas)
         for carta in lista_cartas:
             self._cartas.append(carta)
 
