@@ -182,7 +182,7 @@ class PlayerInterface(DogPlayerInterface):
         self.pass_turn_button = tk.Button(self._bottom_frame, text="Passar a Vez", command=self.pass_turn, bg="#f81313")
         self.pass_turn_button.grid(row=0, column=3, padx=10, pady=5, sticky="w")
 
-        self.give_up_button = tk.Button(self._bottom_frame, text="Desistir da Partida", command=self.show_welcome_screen, bg="#f81313")
+        self.give_up_button = tk.Button(self._bottom_frame, text="Desistir da Partida", command=self.desistir_partida, bg="#f81313")
         self.give_up_button.grid(row=0, column=4, padx=10, pady=5, sticky="w")
 
         self.player_hand_frame = tk.Frame(self._bottom_frame, bg='darkgreen')
@@ -196,6 +196,14 @@ class PlayerInterface(DogPlayerInterface):
             label = tk.Label(self.player_hand_frame, image=card_image, bg='white')
             label.carta_nome = card
             label.pack(side=tk.LEFT, padx=5)
+    
+    def desistir_partida(self):
+        resposta = messagebox.askyesno("Confirmação", "Você tem certeza que quer desistir?")
+        if resposta:
+            desistir = self._partida.desistir()
+            messagebox.showinfo("Ação", "Partida encerrada")
+            self._dog_server_interface.send_move(desistir)
+            self._root.destroy()  
     
     def buy_card(self):
         self.update_player_turn_label("compre uma carta")
@@ -425,8 +433,9 @@ class PlayerInterface(DogPlayerInterface):
 
         elif a_move['tipo_jogada'] == 'passar':
             self.update_player_turn_label("compre uma carta")
+
         
-    def receber_notificacao_de_abandono(self):
+    def receive_withdrawal_notification(self):
         self._partida.set_partida_em_andamento
         messagebox.showinfo("Ação", "O seu oponente desistiu da partida")
         self._root.destroy()

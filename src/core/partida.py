@@ -49,8 +49,13 @@ class Partida:
     def pegar_jog_contrario(self, jogador):     #RETIRAR NO DIAGRAMA
         pass
 
-    def desistir(self):                 #RETIRAR NO DIAGRAMA
-        pass
+    def desistir(self):
+        self.set_partida_em_andamento()
+        desistir = {              
+                'tipo_jogada': "desistir",
+                'match_status': 'interrupted',
+                }
+        return desistir
 
     def comecar_partida(self, jogadores: list):
         pilhas_mesa = self._mesa.get_pilhas()
@@ -236,7 +241,7 @@ class Partida:
                 self._mesa.get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo([jogada['cartas']]))
 
             elif jogada['tipo_jogada'] == 'desistir':
-                pass
+                self.set_partida_em_andamento()
 
     def verificar_inicio(self) -> bool:     #RETIRAR NO DIAGRAMA
         pass
