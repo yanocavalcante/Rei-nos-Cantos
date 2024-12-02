@@ -15,7 +15,7 @@ class Rodada:
     def alterar_comprou_carta(self):
         self._comprou_carta = not (self._comprou_carta)
 
-    def verificar_compra(self):
+    def verificar_compra(self) -> bool:
         return self._comprou_carta
 
     def get_jogador(self) -> Jogador:
