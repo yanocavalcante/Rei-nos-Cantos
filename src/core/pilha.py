@@ -29,11 +29,16 @@ class Pilha:
         else:
             self._cartas.append(carta_s)
 
-    def retirar_cartas_pilha(self, lista_cartas: list):
-        for carta_a_retirar in lista_cartas:
+    def retirar_cartas_pilha(self, carta_s):
+        if type(carta_s) == list:
+            for carta_a_retirar in carta_s:
+                for carta in self._cartas:
+                    if carta_a_retirar.get_codigo() == carta.get_codigo():
+                        self._cartas.remove(carta)
+        else:
             for carta in self._cartas:
-                if carta_a_retirar.get_codigo() == carta.get_codigo():
-                    self._cartas.remove(carta)
+                if carta_s.get_codigo() == carta.get_codigo():
+                    self._cartas.remove(carta_s)
     
     def get_codigo_cartas(self) -> list: #Preciso dessa função para poder passar o código das cartas no JSON da req. HTTP
         lista_codigos = []

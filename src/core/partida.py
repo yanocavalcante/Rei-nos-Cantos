@@ -102,11 +102,14 @@ class Partida:
 
     def mover_cartas(self, carta: str, pilha1: str, pilha2: str) -> dict:
         carta_selecionada = self._mesa._baralho.get_carta_por_nome_imagem(carta)
+        print(carta_selecionada)
         pilha_selecionada_1 = self._mesa.get_pilha_codigo(pilha1)
+        print(pilha_selecionada_1)
         pilha_selecionada_2 = self._mesa.get_pilha_codigo(pilha2)
+        print(pilha_selecionada_2)
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
-                if self._mesa.get_pilha_codigo(pilha_selecionada_2).verifica_colocacao_carta(carta_selecionada):
+                if pilha_selecionada_2.verifica_colocacao_carta(carta_selecionada):
                     index = pilha_selecionada_1.get_cartas().index(carta_selecionada)
                     print(index)
                     cartas_selecionadas = pilha_selecionada_1.get_cartas()[index:]
