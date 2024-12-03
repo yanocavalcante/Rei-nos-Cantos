@@ -102,19 +102,13 @@ class Partida:
 
     def mover_cartas(self, carta: str, pilha1: str, pilha2: str) -> dict:
         carta_selecionada = self._mesa._baralho.get_carta_por_nome_imagem(carta)
-        print(carta_selecionada)
         pilha_selecionada_1 = self._mesa.get_pilha_codigo(pilha1)
-        print(pilha_selecionada_1)
         pilha_selecionada_2 = self._mesa.get_pilha_codigo(pilha2)
-        print(pilha_selecionada_2)
         if self._rodada_atual.comparar_jogador(self._jogador_local):
-            #if self._rodada_atual.verificar_compra():
-            if pilha_selecionada_2.verifica_canto_mover_carta(carta_selecionada):
+            if self._rodada_atual.verificar_compra():
                 if pilha_selecionada_2.verifica_colocacao_carta(carta_selecionada):
                     index = pilha_selecionada_1.get_cartas().index(carta_selecionada)
-                    print(index)
                     cartas_selecionadas = pilha_selecionada_1.get_cartas()[index:]
-                    print(cartas_selecionadas)
                     pilha_selecionada_1.retirar_cartas_pilha(cartas_selecionadas)
                     pilha_selecionada_2.adicionar_cartas_pilha(cartas_selecionadas)
                     mover = {              
@@ -127,8 +121,6 @@ class Partida:
                     return {"mensagem": "Moveu cartas!"}, mover
                 else:
                     return {"mensagem": "Movimento Inválido!"}, None
-                #else:
-                    #return {"mensagem": "Não é possível mover carta(s) para canto sem ter o Rei"}, None
             else:
                 return {"mensagem": "Não é possível mover cartas antes de comprar uma carta!"}, None
         else:
@@ -138,36 +130,31 @@ class Partida:
         pilha = self._mesa.get_pilha_codigo(direcao)
         carta = self._jogador_local.get_carta_por_nome_imagem(nome_carta)
 
-        print(carta)
-
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
-                if pilha.verifica_canto_colocar_carta():
-                    if pilha.verifica_colocacao_carta(carta):
-                        self._jogador_local.remover_carta(carta)
-                        pilha.adicionar_cartas_pilha(carta)
-                        if self.avaliar_vencedor(self._jogador_local):
-                            jogar_carta = {
-                                'tipo_jogada': "jogar",
-                                'cartas': carta.get_codigo(),
-                                'pilha_adiciona': pilha.get_codigo(),
-                                'match_status': "next",
-                                'venceu': 'True',
-                            }
-                            self.set_partida_em_andamento()
-                        else:
-                            jogar_carta = {
-                                'tipo_jogada': "jogar",
-                                'cartas': carta.get_codigo(),
-                                'pilha_adiciona': pilha.get_codigo(),
-                                'match_status': "next",
-                                'venceu': 'False',
-                            }
-                        return {"mensagem": "Colocou carta na mesa!"}, jogar_carta
+                if pilha.verifica_colocacao_carta(carta):
+                    self._jogador_local.remover_carta(carta)
+                    pilha.adicionar_cartas_pilha(carta)
+                    if self.avaliar_vencedor(self._jogador_local):
+                        jogar_carta = {
+                            'tipo_jogada': "jogar",
+                            'cartas': carta.get_codigo(),
+                            'pilha_adiciona': pilha.get_codigo(),
+                            'match_status': "next",
+                            'venceu': 'True',
+                        }
+                        self.set_partida_em_andamento()
                     else:
-                        return {"mensagem": "Movimento inválido!"}, None
+                        jogar_carta = {
+                            'tipo_jogada': "jogar",
+                            'cartas': carta.get_codigo(),
+                            'pilha_adiciona': pilha.get_codigo(),
+                            'match_status': "next",
+                            'venceu': 'False',
+                        }
+                    return {"mensagem": "Colocou carta na mesa!"}, jogar_carta
                 else:
-                    return {"mensagem": "Não é possível jogar rei no canto em colocar carta"}, None
+                    return {"mensagem": "Movimento inválido!"}, None
             else:
                 return {"mensagem": "Não é possível jogar carta antes de comprar uma carta!"}, None
         else:
@@ -243,12 +230,12 @@ class Partida:
             self._jogador_remoto.adicionar_cartas(self._mesa.get_cartas_codigo(jogada['cartas_jogador_local']))   #Lembrar que os pontos de vista sempre se invertem
         else:
             if jogada['tipo_jogada'] == 'mover':
-                print('receber mover', self._mesa.get_cartas_codigo(jogada['cartas']))
+                # print('receber mover', self._mesa.get_cartas_codigo(jogada['cartas']))
                 self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
                 self._mesa.get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
             
             elif jogada['tipo_jogada'] == 'rei_no_canto' or jogada['tipo_jogada'] == 'jogar':
-                print('receber jogar ou rei no canto', self._mesa.get_cartas_codigo(jogada['cartas']))
+                # print('receber jogar ou rei no canto', self._mesa.get_cartas_codigo(jogada['cartas']))
                 self._jogador_remoto.remover_carta((self._mesa.get_cartas_codigo(jogada['cartas'])))
                 self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
             

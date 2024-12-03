@@ -358,7 +358,7 @@ class PlayerInterface(DogPlayerInterface):
 
     def remove_cartas(self, pilha, quantidade):
         children = self.card_frames[pilha].winfo_children()
-        print(children)
+        # print(children)
         for i in range(quantidade):
             if children:
                 children[-1].destroy()
@@ -372,18 +372,19 @@ class PlayerInterface(DogPlayerInterface):
 
         # abrir modal que mostra todas as cartas daquela pilha
         carta = self.selecionar_cartas_pilha(pilha1)
-        self.update_player_turn_label("selecione uma pilha para adicionar as cartas")
+        self.update_player_turn_label("selecione uma pilha para adicionar as cartas!")
         pilha2 = self.selecionar_pilha()
         dicionario, mover = self._partida.mover_cartas(carta, pilha1, pilha2)
-        
-        quantidade = len(mover['cartas'])
-        self.remove_cartas(pilha1, quantidade)
-
-        self.place_card_interface(mover)
         messagebox.showinfo("Ação", dicionario['mensagem'])
-        self.update_player_turn_label("é sua vez de jogar")
+
         if mover is not None:
+            quantidade = len(mover['cartas'])
+
+            self.remove_cartas(pilha1, quantidade)
+            self.place_card_interface(mover)
+
             self._dog_server_interface.send_move(mover)
+            self.update_player_turn_label("é sua vez de jogar")
 
     def place_king(self):
         self.update_player_turn_label("selecione um Rei para jogar na mesa!")
@@ -394,7 +395,7 @@ class PlayerInterface(DogPlayerInterface):
         messagebox.showinfo("Ação", dicionario['mensagem'])
         
         if rei_no_canto is not None:
-            self.place_king_interface(rei_no_canto)
+            self.place_card_interface(rei_no_canto)
             self.atualizar_mao()
             if rei_no_canto['venceu'] == 'True':
                 messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
