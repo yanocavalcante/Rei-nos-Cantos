@@ -9,6 +9,24 @@ class Pilha:
     def get_cartas(self) -> list:
         return self._cartas
 
+    def verifica_canto_colocar_carta(self) -> bool:
+        if self.verifica_canto():
+            if self._cartas != []:
+                return True
+            else:
+                return False
+        else:
+            return True
+            
+    def verifica_canto_mover_carta(self, carta_s) -> bool:
+        if self.verifica_canto():
+            if carta_s.verificar_rei():
+                return True
+            else:
+                return False
+        else:
+            return True
+    
     def verifica_colocacao_carta(self, carta) -> bool:
         print("Cartas da Pilha:", self._cartas)
         if self._cartas == []:

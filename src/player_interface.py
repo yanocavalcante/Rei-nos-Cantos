@@ -362,7 +362,7 @@ class PlayerInterface(DogPlayerInterface):
         for i in range(quantidade):
             if children:
                 children[-1].destroy()
-                children = self.card_frames[pilha].winfo_children()  # Atualizar a lista de filhos
+                children = self.card_frames[pilha].winfo_children()  
             else:
                 break  
     

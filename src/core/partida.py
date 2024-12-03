@@ -108,7 +108,8 @@ class Partida:
         pilha_selecionada_2 = self._mesa.get_pilha_codigo(pilha2)
         print(pilha_selecionada_2)
         if self._rodada_atual.comparar_jogador(self._jogador_local):
-            if self._rodada_atual.verificar_compra():
+            #if self._rodada_atual.verificar_compra():
+            if pilha_selecionada_2.verifica_canto_mover_carta(carta_selecionada):
                 if pilha_selecionada_2.verifica_colocacao_carta(carta_selecionada):
                     index = pilha_selecionada_1.get_cartas().index(carta_selecionada)
                     print(index)
@@ -126,6 +127,8 @@ class Partida:
                     return {"mensagem": "Moveu cartas!"}, mover
                 else:
                     return {"mensagem": "Movimento Inválido!"}, None
+                #else:
+                    #return {"mensagem": "Não é possível mover carta(s) para canto sem ter o Rei"}, None
             else:
                 return {"mensagem": "Não é possível mover cartas antes de comprar uma carta!"}, None
         else:
@@ -139,29 +142,32 @@ class Partida:
 
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
-                if pilha.verifica_colocacao_carta(carta):
-                    self._jogador_local.remover_carta(carta)
-                    pilha.adicionar_cartas_pilha(carta)
-                    if self.avaliar_vencedor(self._jogador_local):
-                        jogar_carta = {
-                            'tipo_jogada': "jogar",
-                            'cartas': carta.get_codigo(),
-                            'pilha_adiciona': pilha.get_codigo(),
-                            'match_status': "next",
-                            'venceu': 'True',
-                        }
-                        self.set_partida_em_andamento()
+                if pilha.verifica_canto_colocar_carta():
+                    if pilha.verifica_colocacao_carta(carta):
+                        self._jogador_local.remover_carta(carta)
+                        pilha.adicionar_cartas_pilha(carta)
+                        if self.avaliar_vencedor(self._jogador_local):
+                            jogar_carta = {
+                                'tipo_jogada': "jogar",
+                                'cartas': carta.get_codigo(),
+                                'pilha_adiciona': pilha.get_codigo(),
+                                'match_status': "next",
+                                'venceu': 'True',
+                            }
+                            self.set_partida_em_andamento()
+                        else:
+                            jogar_carta = {
+                                'tipo_jogada': "jogar",
+                                'cartas': carta.get_codigo(),
+                                'pilha_adiciona': pilha.get_codigo(),
+                                'match_status': "next",
+                                'venceu': 'False',
+                            }
+                        return {"mensagem": "Colocou carta na mesa!"}, jogar_carta
                     else:
-                        jogar_carta = {
-                            'tipo_jogada': "jogar",
-                            'cartas': carta.get_codigo(),
-                            'pilha_adiciona': pilha.get_codigo(),
-                            'match_status': "next",
-                            'venceu': 'False',
-                        }
-                    return {"mensagem": "Colocou carta na mesa!"}, jogar_carta
+                        return {"mensagem": "Movimento inválido!"}, None
                 else:
-                    return {"mensagem": "Movimento inválido!"}, None
+                    return {"mensagem": "Não é possível jogar rei no canto em colocar carta"}, None
             else:
                 return {"mensagem": "Não é possível jogar carta antes de comprar uma carta!"}, None
         else:
