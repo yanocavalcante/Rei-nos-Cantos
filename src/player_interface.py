@@ -322,7 +322,7 @@ class PlayerInterface(DogPlayerInterface):
             label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
     
     def selecionar_cartas_pilha(self, pilha):
-        """Exibe um modal para selecionar uma carta de uma pilha."""
+        """Exibe um modal para selecionar uma carta de uma pilha com scroll."""
         modal = tk.Toplevel(self._root)
         modal.title("Selecionar Carta")
         modal.geometry("400x300")
@@ -335,28 +335,46 @@ class PlayerInterface(DogPlayerInterface):
         # Variável para armazenar a carta selecionada
         carta_selecionada = tk.StringVar()
 
-        # Criação dos botões para cada carta
+        # Frame principal para o canvas e scrollbar
+        frame_principal = tk.Frame(modal, bg="darkgreen")
+        frame_principal.pack(fill=tk.BOTH, expand=True)
+
+        # Canvas para suportar o scroll
+        canvas = tk.Canvas(frame_principal, bg="darkgreen")
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Scrollbar vertical
+        scrollbar = tk.Scrollbar(frame_principal, orient=tk.VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Configurar canvas com scrollbar
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        # Frame interno para colocar os botões
+        frame_conteudo = tk.Frame(canvas, bg="darkgreen")
+        canvas.create_window((0, 0), window=frame_conteudo, anchor="nw")
+
+        # Adicionar botões e imagens ao frame interno
         for idx, carta in enumerate(nome_cartas):
             card_image = self._card_images[carta]
-            frame = tk.Frame(modal, bg='darkgreen')
+            frame = tk.Frame(frame_conteudo, bg='darkgreen')
             frame.pack(pady=5)
 
             label = tk.Label(frame, image=card_image, bg='white')
-            label.image = card_image 
+            label.image = card_image
             label.pack(side=tk.LEFT, padx=5)
 
-            button = tk.Button(
-                frame,
+            button = tk.Button(frame,
                 text="Selecionar",
                 command=lambda c=carta: carta_selecionada.set(c),
                 bg="#f81313",
-                width=15
-            )
+                width=15)
             button.pack(side=tk.RIGHT, padx=5)
 
         # Aguarda até que o usuário selecione uma carta
         self._root.wait_variable(carta_selecionada)
-        modal.destroy() 
+        modal.destroy()
 
         return carta_selecionada.get()
 
