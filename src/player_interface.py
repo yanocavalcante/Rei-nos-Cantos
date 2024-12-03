@@ -268,6 +268,7 @@ class PlayerInterface(DogPlayerInterface):
                 messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
                 self._dog_server_interface.send_move(jogar_carta)
                 self._root.destroy()
+                return
             else:
                 self._dog_server_interface.send_move(jogar_carta)
 
@@ -527,17 +528,17 @@ class PlayerInterface(DogPlayerInterface):
         elif a_move['tipo_jogada'] == 'jogar':
             self.place_card_interface(a_move)
             if a_move['venceu'] == 'True':
-                messagebox.showinfo("Ação", "O seu oponente venceu a partida")
+                messagebox.showinfo("Ação", "O seu oponente venceu a partida!")
                 self._root.destroy()
 
         elif a_move['tipo_jogada'] == 'rei_no_canto':
-            self.place_king_interface(a_move)
+            self.place_card_interface(a_move)
             if a_move['venceu'] == 'True':
-                messagebox.showinfo("Ação", "O seu oponente venceu a partida")
+                messagebox.showinfo("Ação", "O seu oponente venceu a partida!")
                 self._root.destroy()
 
         elif a_move['tipo_jogada'] == 'passar':
-            self.update_player_turn_label("compre uma carta")
+            self.update_player_turn_label("compre uma carta!")
         
         elif a_move['tipo_jogada'] == 'mover':
             if type(a_move['cartas']) == list:
