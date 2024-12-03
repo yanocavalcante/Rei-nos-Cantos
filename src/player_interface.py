@@ -379,12 +379,10 @@ class PlayerInterface(DogPlayerInterface):
 
         if mover is not None:
             quantidade = len(mover['cartas'])
-
             self.remove_cartas(pilha1, quantidade)
             self.place_card_interface(mover)
-
             self._dog_server_interface.send_move(mover)
-            self.update_player_turn_label("é sua vez de jogar")
+        self.update_player_turn_label("é sua vez de jogar")
 
     def place_king(self):
         self.update_player_turn_label("selecione um Rei para jogar na mesa!")
