@@ -268,6 +268,7 @@ class PlayerInterface(DogPlayerInterface):
                 messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
                 self._dog_server_interface.send_move(jogar_carta)
                 self._root.destroy()
+                return
             else:
                 self._dog_server_interface.send_move(jogar_carta)
 
@@ -322,7 +323,7 @@ class PlayerInterface(DogPlayerInterface):
             label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
     
     def selecionar_cartas_pilha(self, pilha):
-        """Exibe um modal para selecionar uma carta de uma pilha."""
+        """Exibe um modal para selecionar uma carta de uma pilha com scroll."""
         modal = tk.Toplevel(self._root)
         modal.title("Selecionar Carta")
         modal.geometry("400x300")
@@ -335,28 +336,46 @@ class PlayerInterface(DogPlayerInterface):
         # Variável para armazenar a carta selecionada
         carta_selecionada = tk.StringVar()
 
-        # Criação dos botões para cada carta
+        # Frame principal para o canvas e scrollbar
+        frame_principal = tk.Frame(modal, bg="darkgreen")
+        frame_principal.pack(fill=tk.BOTH, expand=True)
+
+        # Canvas para suportar o scroll
+        canvas = tk.Canvas(frame_principal, bg="darkgreen")
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Scrollbar vertical
+        scrollbar = tk.Scrollbar(frame_principal, orient=tk.VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Configurar canvas com scrollbar
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        # Frame interno para colocar os botões
+        frame_conteudo = tk.Frame(canvas, bg="darkgreen")
+        canvas.create_window((0, 0), window=frame_conteudo, anchor="nw")
+
+        # Adicionar botões e imagens ao frame interno
         for idx, carta in enumerate(nome_cartas):
             card_image = self._card_images[carta]
-            frame = tk.Frame(modal, bg='darkgreen')
+            frame = tk.Frame(frame_conteudo, bg='darkgreen')
             frame.pack(pady=5)
 
             label = tk.Label(frame, image=card_image, bg='white')
-            label.image = card_image 
+            label.image = card_image
             label.pack(side=tk.LEFT, padx=5)
 
-            button = tk.Button(
-                frame,
+            button = tk.Button(frame,
                 text="Selecionar",
                 command=lambda c=carta: carta_selecionada.set(c),
                 bg="#f81313",
-                width=15
-            )
+                width=15)
             button.pack(side=tk.RIGHT, padx=5)
 
         # Aguarda até que o usuário selecione uma carta
         self._root.wait_variable(carta_selecionada)
-        modal.destroy() 
+        modal.destroy()
 
         return carta_selecionada.get()
 
@@ -406,49 +425,6 @@ class PlayerInterface(DogPlayerInterface):
             else:
                 self.update_player_turn_label("é sua vez de jogar")
                 self._dog_server_interface.send_move(rei_no_canto)
-
-    def place_king_interface(self, rei_no_canto: dict):
-        nome_carta = self.get_nome_carta(rei_no_canto['cartas'])
-        codp = rei_no_canto['pilha_adiciona']
-        card_image = self._card_images[nome_carta]
-
-        if codp in ['C2', 'C3']:
-            pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_carta}.png"))
-            pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
-            rotated_image = pil_image.rotate(90, expand=True)
-            card_image = ImageTk.PhotoImage(rotated_image)
-        
-        elif codp in ['C0', 'C1']:
-            pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_carta}.png"))
-            pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
-            rotated_image = pil_image.rotate(270, expand=True)
-            card_image = ImageTk.PhotoImage(rotated_image)
-
-        existing_cards = self.card_frames[codp].winfo_children()
-        x_offset_increment = 10
-        y_offset_increment = 10  
-        if codp in ['C3']:
-            offset_x = 15
-            offset_y = 0
-            offset_x += len(existing_cards) * x_offset_increment
-
-        elif codp in ['C1']:
-            offset_x = 0
-            offset_y = -15
-            offset_y -= len(existing_cards) * y_offset_increment
-
-        elif codp in ['C0']:
-            offset_x = 0
-            offset_y = 15
-            offset_y += len(existing_cards) * y_offset_increment
-        else:
-            offset_x = -15
-            offset_y = 0
-            offset_x -= len(existing_cards) * y_offset_increment
-
-        label = tk.Label(self.card_frames[codp], image=card_image)
-        label.image = card_image  
-        label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
 
     def pass_turn(self):
         dicionario, passar = self._partida.passar_a_vez()
@@ -509,17 +485,17 @@ class PlayerInterface(DogPlayerInterface):
         elif a_move['tipo_jogada'] == 'jogar':
             self.place_card_interface(a_move)
             if a_move['venceu'] == 'True':
-                messagebox.showinfo("Ação", "O seu oponente venceu a partida")
+                messagebox.showinfo("Ação", "O seu oponente venceu a partida!")
                 self._root.destroy()
 
         elif a_move['tipo_jogada'] == 'rei_no_canto':
-            self.place_king_interface(a_move)
+            self.place_card_interface(a_move)
             if a_move['venceu'] == 'True':
-                messagebox.showinfo("Ação", "O seu oponente venceu a partida")
+                messagebox.showinfo("Ação", "O seu oponente venceu a partida!")
                 self._root.destroy()
 
         elif a_move['tipo_jogada'] == 'passar':
-            self.update_player_turn_label("compre uma carta")
+            self.update_player_turn_label("compre uma carta!")
         
         elif a_move['tipo_jogada'] == 'mover':
             if type(a_move['cartas']) == list:
