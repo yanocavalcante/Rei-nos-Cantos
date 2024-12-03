@@ -426,49 +426,6 @@ class PlayerInterface(DogPlayerInterface):
                 self.update_player_turn_label("é sua vez de jogar")
                 self._dog_server_interface.send_move(rei_no_canto)
 
-    def place_king_interface(self, rei_no_canto: dict):
-        nome_carta = self.get_nome_carta(rei_no_canto['cartas'])
-        codp = rei_no_canto['pilha_adiciona']
-        card_image = self._card_images[nome_carta]
-
-        if codp in ['C2', 'C3']:
-            pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_carta}.png"))
-            pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
-            rotated_image = pil_image.rotate(90, expand=True)
-            card_image = ImageTk.PhotoImage(rotated_image)
-        
-        elif codp in ['C0', 'C1']:
-            pil_image = Image.open(os.path.join(self._base_dir, "images", "cartas", f"{nome_carta}.png"))
-            pil_image = pil_image.resize((70, 100), Image.Resampling.LANCZOS)
-            rotated_image = pil_image.rotate(270, expand=True)
-            card_image = ImageTk.PhotoImage(rotated_image)
-
-        existing_cards = self.card_frames[codp].winfo_children()
-        x_offset_increment = 10
-        y_offset_increment = 10  
-        if codp in ['C3']:
-            offset_x = 15
-            offset_y = 0
-            offset_x += len(existing_cards) * x_offset_increment
-
-        elif codp in ['C1']:
-            offset_x = 0
-            offset_y = -15
-            offset_y -= len(existing_cards) * y_offset_increment
-
-        elif codp in ['C0']:
-            offset_x = 0
-            offset_y = 15
-            offset_y += len(existing_cards) * y_offset_increment
-        else:
-            offset_x = -15
-            offset_y = 0
-            offset_x -= len(existing_cards) * y_offset_increment
-
-        label = tk.Label(self.card_frames[codp], image=card_image)
-        label.image = card_image  
-        label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
-
     def pass_turn(self):
         dicionario, passar = self._partida.passar_a_vez()
         messagebox.showinfo("Ação", dicionario['mensagem'])
