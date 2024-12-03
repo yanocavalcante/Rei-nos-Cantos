@@ -21,7 +21,7 @@ class Baralho:
     def get_cartas(self) -> list[Carta]:
         return self._cartas
     
-    def get_carta_codigo(self, codp) -> Carta:      #Retorna uma instância de carta que tenha o código passado
+    def get_carta_codigo(self, codp) -> Carta:      #Retorna uma instância de carta baseado num código fornecido
         for carta in self._cartas:
             if carta.get_codigo() == codp:
                 return carta 
@@ -34,7 +34,7 @@ class Baralho:
             if carta.get_numero() == int(rank) and carta.get_naipe().name.lower() == suit.lower():
                 return carta
     
-    def get_codigo_cartas(self, cartas_selecionadas) -> list: 
+    def get_codigo_cartas(self, cartas_selecionadas) -> list:   #Retorna uma lista de códigos com base nas instâncias de carta fornecidas
         lista_codigos = []
         for carta in cartas_selecionadas:
             lista_codigos.append(carta.get_codigo())
