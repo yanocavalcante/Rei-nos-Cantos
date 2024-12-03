@@ -48,6 +48,7 @@ class PlayerInterface(DogPlayerInterface):
 
     def load_reverse_card_image(self):
         image = Image.open(os.path.join(self._base_dir, "images", "carta_ao_contrario.png"))
+        self.reverse_card = image
         image = image.resize((90, 120), Image.Resampling.LANCZOS)
         self.card_image = ImageTk.PhotoImage(image)
 
@@ -91,6 +92,7 @@ class PlayerInterface(DogPlayerInterface):
 
     def create_game_widgets(self):
         self.card_frames = {}
+
         for direction in ['0', '1', '2', '3']:
             frame = tk.Frame(self._center_frame, width=150, height=100, relief=tk.RAISED)
             
@@ -104,18 +106,20 @@ class PlayerInterface(DogPlayerInterface):
                 frame.grid(row=2, column=0, columnspan=2, pady=10)
 
             self.card_frames[direction] = frame
-
+        self.load_reverse_card_image()
+        self.place_initial_cards()
+        
+        self.reverse_card = ImageTk.PhotoImage(self.reverse_card.resize((70,100), Image.Resampling.LANCZOS).rotate(90, expand=True))
         for canto in ['C0', 'C1', 'C2', 'C3']:
             frame = tk.Frame(self._center_frame, width=150, height=100, relief=tk.RAISED)
             frame.grid(row={'C0': 1, 'C1': 3, 'C2': 3, 'C3': 1}[canto],
                     column={'C0': 3, 'C1': 3, 'C2': 1, 'C3': 1}[canto], pady=10)
-            frame.grid_propagate(False)  # Desativa a propagação do tamanho
+
+            # frame.grid_propagate(False)  # Desativa a propagação do tamanho
             self.card_frames[canto] = frame
-
-
-
-        self.place_initial_cards()
-        self.load_reverse_card_image()
+            
+            label = tk.Label(self.card_frames[canto], image=self.reverse_card)
+            label.pack()
 
         self.buy_button = tk.Button(self._center_frame, text="Comprar Carta", command=self.buy_card, bg="#f81313")
         self.buy_button.grid(row=2, column=2)
@@ -292,19 +296,19 @@ class PlayerInterface(DogPlayerInterface):
                 offset_x -= existing_cards * x_offset_increment
 
             elif direcao_pilha in ['1']:
-                offset_y = -15
-                offset_x = 0
-                offset_y -= existing_cards * y_offset_increment
-
-            elif direcao_pilha in ['0']:
                 offset_y = 15
                 offset_x = 0
                 offset_y += existing_cards * y_offset_increment
 
+            elif direcao_pilha in ['0']:
+                offset_y = -15
+                offset_x = 0
+                offset_y -= existing_cards * y_offset_increment
+
             else:
-                offset_x = -15
+                offset_x = 15
                 offset_y = 0
-                offset_x -= existing_cards * y_offset_increment
+                offset_x += existing_cards * y_offset_increment
 
             card_image = self._card_images[nome_carta]
             if direcao_pilha in ['C0','C1','C2','C3','2','3']:

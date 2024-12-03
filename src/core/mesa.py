@@ -63,7 +63,7 @@ class Mesa:
                 if pilha.get_codigo() == codp:
                     return pilha
 
-    def get_cartas_codigo(self, lista_codc):
+    def get_cartas_codigo(self, lista_codc):        #Retorna instãncias de cartas da pilha baseado numa lista de códigos fornecidos
         if type(lista_codc) == list:
             lista_cartas = []
             for codc in lista_codc:
