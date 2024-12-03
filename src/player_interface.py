@@ -504,9 +504,15 @@ class PlayerInterface(DogPlayerInterface):
 
         elif a_move['tipo_jogada'] == 'jogar':
             self.place_card_interface(a_move)
+            if a_move['venceu'] == 'True':
+                messagebox.showinfo("Ação", "O seu oponente venceu a partida")
+                self._root.destroy()
 
         elif a_move['tipo_jogada'] == 'rei_no_canto':
             self.place_king_interface(a_move)
+            if a_move['venceu'] == 'True':
+                messagebox.showinfo("Ação", "O seu oponente venceu a partida")
+                self._root.destroy()
 
         elif a_move['tipo_jogada'] == 'passar':
             self.update_player_turn_label("compre uma carta")

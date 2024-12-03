@@ -140,7 +140,7 @@ class Partida:
                             'tipo_jogada': "jogar",
                             'cartas': carta.get_codigo(),
                             'pilha_adiciona': pilha.get_codigo(),
-                            'match_status': "next",
+                            'match_status': "finished",
                             'venceu': 'True',
                         }
                         self.set_partida_em_andamento()
@@ -194,7 +194,7 @@ class Partida:
                                 'tipo_jogada': "rei_no_canto",
                                 'carta': carta,
                                 'pilha_adiciona': codp,
-                                'match_status': 'next',
+                                'match_status': 'finished',
                                 'venceu': 'True'
                                 }
                                 self.set_partida_em_andamento()
@@ -204,7 +204,7 @@ class Partida:
                                     'cartas': carta.get_codigo(),
                                     'pilha_adiciona': codp,
                                     'match_status': 'next',
-                                'venceu': 'False'
+                                    'venceu': 'False'
                                 }
                             return {"mensagem": "Colocou Rei no Canto!"}, rei_no_canto
                         else:
