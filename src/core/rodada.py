@@ -21,8 +21,5 @@ class Rodada:
     def get_jogador(self) -> Jogador:
         return self._jogador
 
-    def adicionar_jogador(jog_contrario: Jogador) -> Jogador:       #RETIRAR NO DIAGRAMA
-        pass
-
     def set_jogador(self, prox_jogador: Jogador) -> Jogador:
         self._jogador = prox_jogador

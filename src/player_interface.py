@@ -333,30 +333,22 @@ class PlayerInterface(DogPlayerInterface):
         cartas_pilha = self._partida._mesa.get_pilha_codigo(pilha).get_cartas()
         nome_cartas = self.get_codigo_cartas(cartas_pilha)
 
-        # Variável para armazenar a carta selecionada
         carta_selecionada = tk.StringVar()
 
-        # Frame principal para o canvas e scrollbar
         frame_principal = tk.Frame(modal, bg="darkgreen")
         frame_principal.pack(fill=tk.BOTH, expand=True)
 
-        # Canvas para suportar o scroll
         canvas = tk.Canvas(frame_principal, bg="darkgreen")
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-        # Scrollbar vertical
         scrollbar = tk.Scrollbar(frame_principal, orient=tk.VERTICAL, command=canvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Configurar canvas com scrollbar
         canvas.configure(yscrollcommand=scrollbar.set)
         canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
-        # Frame interno para colocar os botões
         frame_conteudo = tk.Frame(canvas, bg="darkgreen")
         canvas.create_window((0, 0), window=frame_conteudo, anchor="nw")
 
-        # Adicionar botões e imagens ao frame interno
         for idx, carta in enumerate(nome_cartas):
             card_image = self._card_images[carta]
             frame = tk.Frame(frame_conteudo, bg='darkgreen')
@@ -373,7 +365,6 @@ class PlayerInterface(DogPlayerInterface):
                 width=15)
             button.pack(side=tk.RIGHT, padx=5)
 
-        # Aguarda até que o usuário selecione uma carta
         self._root.wait_variable(carta_selecionada)
         modal.destroy()
 

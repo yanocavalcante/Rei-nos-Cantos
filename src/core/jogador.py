@@ -11,12 +11,6 @@ class Jogador:
     def get_id(self):
         return self._id
 
-    def reset(self):            #RETIRAR NO DIAGRAMA
-        pass
-
-    def troca_turno(self):      #RETIRAR NO DIAGRAMA
-        pass
-
     def adicionar_cartas(self, cartas: list):
         for carta in cartas:
             self._cartas.append(carta)
@@ -31,12 +25,6 @@ class Jogador:
         else:
             return False
 
-    def distribuir_cartas(self, lista_cartas: list) -> list:        #RETIRAR NO DIAGRAMA
-        pass
-
-    def distribuir_cartas(self, cartas_restantes: list):        #RETIRAR NO DIAGRAMA
-        pass
-    
     def get_codigos_mao(self) -> list:  #Retorna uma lista com os códigos das cartas da mão do Jogador
         lista_codigos = []
         for carta in self._cartas:

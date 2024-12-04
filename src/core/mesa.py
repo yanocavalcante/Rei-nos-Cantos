@@ -24,9 +24,6 @@ class Mesa:
     def get_baralho(self) -> list:
         return self._baralho
 
-    def limpar_mesa(self):      #RETIRAR NO DIAGRAMA
-        pass
-
     def comprar_carta_monte(self) -> object:
         return self._monte._cartas.pop(-1)
 
