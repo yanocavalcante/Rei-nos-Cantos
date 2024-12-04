@@ -9,25 +9,10 @@ class Partida:
         self._mesa = Mesa()
         self._partida_em_andamento = False
 
-    def abandonar_partida(self):
-        pass
-
-    def obtem_status(self):         #RETIRAR NO DIAGRAMA
-        pass
-
     def receive_start(self, jogadores: list):
         self._jogador_local = Jogador(jogadores[1][0], jogadores[1][1])
         self._jogador_remoto = Jogador(jogadores[0][0], jogadores[0][1])
         self._rodada_atual.set_jogador(self._jogador_remoto)
-
-    def obter_status_partida(self) -> str:  #RETIRAR NO DIAGRAMA
-        pass
-
-    def restaurar_estado_inicial(self):     #RETIRAR NO DIAGRAMA
-        pass
-
-    def reiniciar_vitoria(self):            #RETIRAR NO DIAGRAMA
-        pass
 
     def passar_a_vez(self):
         if self._rodada_atual.comparar_jogador(self._jogador_local):
@@ -44,10 +29,6 @@ class Partida:
                 return {"mensagem": "Não é possível passar a vez antes de comprar uma carta!"}, None
         else:
             return {"mensagem": "Não é possível passar a vez fora do turno"}, None
-            
-
-    def pegar_jog_contrario(self, jogador):     #RETIRAR NO DIAGRAMA
-        pass
 
     def desistir(self):
         self.set_partida_em_andamento()
@@ -251,12 +232,6 @@ class Partida:
 
             elif jogada['tipo_jogada'] == 'desistir':
                 self.set_partida_em_andamento()
-
-    def verificar_inicio(self) -> bool:     #RETIRAR NO DIAGRAMA
-        pass
-
-    def obter_jogada(self, jogada: dict):   #RETIRAR NO DIAGRAMA
-        pass
 
     def set_partida_em_andamento(self):
         self._partida_em_andamento = not(self._partida_em_andamento)
