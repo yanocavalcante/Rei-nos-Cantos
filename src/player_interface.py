@@ -372,7 +372,6 @@ class PlayerInterface(DogPlayerInterface):
 
     def remove_cartas(self, pilha, quantidade):
         children = self.card_frames[pilha].winfo_children()
-        # print(children)
         for i in range(quantidade):
             if children:
                 children[-1].destroy()
