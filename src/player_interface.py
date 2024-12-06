@@ -495,7 +495,7 @@ class PlayerInterface(DogPlayerInterface):
             self.place_card_interface(a_move)
         
     def receive_withdrawal_notification(self):
-        self._partida.set_partida_em_andamento
+        self._partida.toggle_partida_em_andamento
         messagebox.showinfo("Ação", "O seu oponente desistiu da partida")
         self._root.destroy()
 
