@@ -31,7 +31,7 @@ class Partida:
             return {"mensagem": "Não é possível passar a vez fora do turno"}, None
 
     def desistir(self):
-        self.set_partida_em_andamento()
+        self.toggle_partida_em_andamento()
         desistir = {              
                 'tipo_jogada': "desistir",
                 'match_status': 'interrupted',
@@ -52,7 +52,7 @@ class Partida:
 
         self._mesa.distribuir_cartas_jogador(cartas_jogadores[:7], self._jogador_remoto)
         self._mesa.distribuir_cartas_jogador(cartas_jogadores[7:], self._jogador_local)
-        self.set_partida_em_andamento()
+        self.toggle_partida_em_andamento()
 
         inicio = {
             'tipo_jogada': "inicio",
@@ -124,7 +124,7 @@ class Partida:
                             'match_status': "finished",
                             'venceu': 'True',
                         }
-                        self.set_partida_em_andamento()
+                        self.toggle_partida_em_andamento()
                     else:
                         jogar_carta = {
                             'tipo_jogada': "jogar",
@@ -178,7 +178,7 @@ class Partida:
                                 'match_status': 'finished',
                                 'venceu': 'True'
                                 }
-                                self.set_partida_em_andamento()
+                                self.toggle_partida_em_andamento()
                             else:
                                 rei_no_canto = {              
                                     'tipo_jogada': "rei_no_canto",
@@ -219,7 +219,7 @@ class Partida:
                 self._mesa.get_pilha_codigo(jogada['pilha_adiciona']).adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas']))
             
                 if jogada['venceu'] == 'True':
-                    self.set_partida_em_andamento()
+                    self.toggle_partida_em_andamento()
             elif jogada['tipo_jogada'] == 'passar':
                 nova_rodada = Rodada()
                 nova_rodada.set_jogador(self._jogador_local)
@@ -229,9 +229,9 @@ class Partida:
                 self._mesa.get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo([jogada['cartas']]))
 
             elif jogada['tipo_jogada'] == 'desistir':
-                self.set_partida_em_andamento()
+                self.toggle_partida_em_andamento()
 
-    def set_partida_em_andamento(self):
+    def toggle_partida_em_andamento(self):
         self._partida_em_andamento = not(self._partida_em_andamento)
 
     def get_partida_em_andamento(self) -> bool:
