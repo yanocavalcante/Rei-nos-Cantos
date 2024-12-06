@@ -472,13 +472,7 @@ class PlayerInterface(DogPlayerInterface):
         if a_move['tipo_jogada'] == 'inicio':
             self.create_game_widgets()
 
-        elif a_move['tipo_jogada'] == 'jogar':
-            self.place_card_interface(a_move)
-            if a_move['venceu'] == 'True':
-                messagebox.showinfo("Ação", "O seu oponente venceu a partida!")
-                self._root.destroy()
-
-        elif a_move['tipo_jogada'] == 'rei_no_canto':
+        elif a_move['tipo_jogada'] == 'jogar' or a_move['tipo_jogada'] == 'rei_no_canto':
             self.place_card_interface(a_move)
             if a_move['venceu'] == 'True':
                 messagebox.showinfo("Ação", "O seu oponente venceu a partida!")
