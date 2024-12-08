@@ -11,11 +11,6 @@ class Pilha:
 
     def verifica_colocacao_carta(self, carta) -> bool:
         if self._cartas == []:
-            if self.verifica_canto():
-                if carta.verificar_rei():
-                    return True
-                return False
-            else:
                 return True
         elif self._cartas[-1].get_numero() == carta.get_numero() + 1:
             if self._cartas[-1].verificar_cor_carta() != carta.verificar_cor_carta():
