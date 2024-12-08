@@ -205,13 +205,13 @@ class PlayerInterface(DogPlayerInterface):
         resposta = messagebox.askyesno("Confirmação", "Você tem certeza que quer desistir?")
         if resposta:
             desistir = self._partida.desistir()
-            messagebox.showinfo("Ação", "Partida encerrada")
+            self.receber_popup("Partida encerrada")
             self._dog_server_interface.send_move(desistir)
             self._root.destroy()  
     
     def buy_card(self):
         dicionario, compra = self._partida.comprar_carta()
-        messagebox.showinfo("Ação", dicionario['mensagem'])
+        self.receber_popup(dicionario['mensagem'])
         self.atualizar_mao()
         self.update_player_turn_label("é sua vez de jogar")
         if compra is not None:
@@ -259,13 +259,13 @@ class PlayerInterface(DogPlayerInterface):
         self.update_player_turn_label("selecione uma pilha de destino!")
         pilha_selecionada = self.selecionar_pilha()
         dicionario, jogar_carta = self._partida.jogar_carta(carta_selecionada, pilha_selecionada)
-        messagebox.showinfo("Ação", dicionario['mensagem'])
+        self.receber_popup(dicionario['mensagem'])
         
         if jogar_carta is not None:
             self.place_card_interface(jogar_carta)
             self.atualizar_mao()
             if jogar_carta['venceu'] == 'True':
-                messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
+                self.receber_popup("Você venceu a partida! Parabéns :)")
                 self._dog_server_interface.send_move(jogar_carta)
                 self._root.destroy()
                 return
@@ -388,7 +388,7 @@ class PlayerInterface(DogPlayerInterface):
         self.update_player_turn_label("selecione uma pilha para adicionar as cartas!")
         pilha2 = self.selecionar_pilha()
         dicionario, mover = self._partida.mover_cartas(carta, pilha1, pilha2)
-        messagebox.showinfo("Ação", dicionario['mensagem'])
+        self.receber_popup(dicionario['mensagem'])
 
         if mover is not None:
             quantidade = len(mover['cartas'])
@@ -403,13 +403,13 @@ class PlayerInterface(DogPlayerInterface):
         self.update_player_turn_label("selecione um Canto de destino!")
         pilha_selecionada = self.selecionar_pilha()
         dicionario, rei_no_canto = self._partida.colocar_rei(carta_selecionada, pilha_selecionada)
-        messagebox.showinfo("Ação", dicionario['mensagem'])
+        self.receber_popup(dicionario['mensagem'])
         
         if rei_no_canto is not None:
             self.place_card_interface(rei_no_canto)
             self.atualizar_mao()
             if rei_no_canto['venceu'] == 'True':
-                messagebox.showinfo("Ação", "Você venceu a partida! Parabéns :)")
+                self.receber_popup("Você venceu a partida! Parabéns :)")
                 self._dog_server_interface.send_move(rei_no_canto)
                 self._root.destroy()
             else:
@@ -418,7 +418,7 @@ class PlayerInterface(DogPlayerInterface):
 
     def pass_turn(self):
         dicionario, passar = self._partida.passar_a_vez()
-        messagebox.showinfo("Ação", dicionario['mensagem'])
+        self.receber_popup(dicionario['mensagem'])
         if passar is not None:
             self._dog_server_interface.send_move(passar)
             self.update_player_turn_label("é a vez do seu oponente jogar")
@@ -436,11 +436,11 @@ class PlayerInterface(DogPlayerInterface):
 
             if start_status.get_code() == "1" or start_status.get_code() == "0":
                 message = start_status.get_message()
-                messagebox.showinfo(message=message)
+                self.receber_popup(message)
             
             else: 
                 message = start_status.get_message()
-                messagebox.showinfo(message=message)
+                self.receber_popup(message)
 
                 self.clear_screen()
                 self.player_turn_label = tk.Label(self._top_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
@@ -458,7 +458,7 @@ class PlayerInterface(DogPlayerInterface):
         self._partida.receive_start(jogadores)
 
         message = start_status.get_message()
-        messagebox.showinfo(message=message)
+        self.receber_popup(message)
         self.clear_screen()
         self.player_turn_label = tk.Label(self._top_frame, font=("Arial", 20), bg='darkgreen', wraplength=150, justify='left')
         self.player_turn_label.grid(row=0, column=0, pady=10)
@@ -475,7 +475,7 @@ class PlayerInterface(DogPlayerInterface):
         elif a_move['tipo_jogada'] == 'jogar' or a_move['tipo_jogada'] == 'rei_no_canto':
             self.place_card_interface(a_move)
             if a_move['venceu'] == 'True':
-                messagebox.showinfo("Ação", "O seu oponente venceu a partida!")
+                self.receber_popup("O seu oponente venceu a partida!")
                 self._root.destroy()
 
         elif a_move['tipo_jogada'] == 'passar':
@@ -490,8 +490,11 @@ class PlayerInterface(DogPlayerInterface):
         
     def receive_withdrawal_notification(self):
         self._partida.toggle_partida_em_andamento
-        messagebox.showinfo("Ação", "O seu oponente desistiu da partida")
+        self.receber_popup("O seu oponente desistiu da partida")
         self._root.destroy()
+
+    def receber_popup(mensagem: str):
+        messagebox.showinfo(message=mensagem)
 
 if __name__ == "__main__":
     root = tk.Tk()
