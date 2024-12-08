@@ -9,7 +9,7 @@ class Partida:
         self._mesa = Mesa()
         self._partida_em_andamento = False
 
-    def receive_start(self, jogadores: list):
+    def receive_start(self, jogadores: list[Jogador]):
         self._jogador_local = Jogador(jogadores[1][0], jogadores[1][1])
         self._jogador_remoto = Jogador(jogadores[0][0], jogadores[0][1])
         self._rodada_atual.set_jogador(self._jogador_remoto)
@@ -38,7 +38,7 @@ class Partida:
                 }
         return desistir
 
-    def comecar_partida(self, jogadores: list):
+    def comecar_partida(self, jogadores: list[Jogador]):
         pilhas_mesa = self._mesa.get_pilhas()
 
         self._jogador_local = Jogador(jogadores[0][0], jogadores[0][1])
@@ -75,11 +75,14 @@ class Partida:
         }
         return inicio
 
-    def avaliar_vencedor(self, jogador) -> bool:
-        if jogador._cartas == []:
+    def avaliar_vencedor(self, jogador: Jogador) -> bool:
+        if jogador.sem_cartas():
+            self.toggle_partida_em_andamento()
+            jogador.set_venceu_partida()
             return True
-        else: 
+        else:
             return False
+
 
     def mover_cartas(self, carta: str, pilha1: str, pilha2: str) -> dict:
         carta_selecionada = self._mesa._baralho.get_carta_por_nome_imagem(carta)
@@ -107,29 +110,28 @@ class Partida:
         else:
             return {"mensagem": "Não é possível mover cartas fora do turno"}, None
 
-    def jogar_carta(self, nome_carta: str, direcao: str) -> dict:
-        pilha = self._mesa.get_pilha_codigo(direcao)
+    def jogar_carta(self, nome_carta: str, pilha: str) -> dict:
+        pilha_selecionada = self._mesa.get_pilha_codigo(pilha)
         carta = self._jogador_local.get_carta_por_nome_imagem(nome_carta)
 
         if self._rodada_atual.comparar_jogador(self._jogador_local):
             if self._rodada_atual.verificar_compra():
-                if pilha.verifica_colocacao_carta(carta):
+                if pilha_selecionada.verifica_colocacao_carta(carta):
                     self._jogador_local.remover_carta(carta)
-                    pilha.adicionar_cartas_pilha(carta)
+                    pilha_selecionada.adicionar_cartas_pilha(carta)
                     if self.avaliar_vencedor(self._jogador_local):
                         jogar_carta = {
                             'tipo_jogada': "jogar",
                             'cartas': carta.get_codigo(),
-                            'pilha_adiciona': pilha.get_codigo(),
+                            'pilha_adiciona': pilha_selecionada.get_codigo(),
                             'match_status': "finished",
                             'venceu': 'True',
                         }
-                        self.toggle_partida_em_andamento()
                     else:
                         jogar_carta = {
                             'tipo_jogada': "jogar",
                             'cartas': carta.get_codigo(),
-                            'pilha_adiciona': pilha.get_codigo(),
+                            'pilha_adiciona': pilha_selecionada.get_codigo(),
                             'match_status': "next",
                             'venceu': 'False',
                         }
@@ -178,7 +180,6 @@ class Partida:
                                 'match_status': 'finished',
                                 'venceu': 'True'
                                 }
-                                self.toggle_partida_em_andamento()
                             else:
                                 rei_no_canto = {              
                                     'tipo_jogada': "rei_no_canto",
@@ -199,7 +200,7 @@ class Partida:
         else:
             return {"mensagem": "Não é possível colocar Rei no Canto fora do turno"}, None
 
-    def receber_jogada(self, jogada):
+    def receber_jogada(self, jogada: dict):
         if jogada['tipo_jogada'] == 'inicio':
             self.instanciar_baralho()
             self._mesa.get_pilha_codigo('M').adicionar_cartas_pilha(self._mesa.get_cartas_codigo(jogada['cartas_monte']))
