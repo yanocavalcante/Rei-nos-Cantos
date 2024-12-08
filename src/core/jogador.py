@@ -3,7 +3,6 @@ class Jogador:
         self._cartas = []
         self._nome = nome
         self._id = id
-        self._venceu_partida = False        
 
     def get_mao(self) -> list:
         return self._cartas
@@ -38,6 +37,4 @@ class Jogador:
         for carta in self._cartas:
             if carta.get_numero() == int(rank) and carta.get_naipe().name.lower() == suit.lower():
                 return carta
-            
-    def set_venceu_partida(self):
-        self._venceu_partida = True
+

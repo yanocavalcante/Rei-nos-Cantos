@@ -78,7 +78,6 @@ class Partida:
     def avaliar_vencedor(self, jogador: Jogador) -> bool:
         if jogador.sem_cartas():
             self.toggle_partida_em_andamento()
-            jogador.set_venceu_partida()
             return True
         else:
             return False
