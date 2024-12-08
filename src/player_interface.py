@@ -493,7 +493,7 @@ class PlayerInterface(DogPlayerInterface):
         self.receber_popup("O seu oponente desistiu da partida")
         self._root.destroy()
 
-    def receber_popup(mensagem: str):
+    def receber_popup(self, mensagem):
         messagebox.showinfo(message=mensagem)
 
 if __name__ == "__main__":
