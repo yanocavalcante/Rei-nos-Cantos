@@ -82,7 +82,6 @@ class Partida:
         else:
             return False
 
-
     def mover_cartas(self, carta: str, pilha1: str, pilha2: str) -> dict:
         carta_selecionada = self._mesa._baralho.get_carta_por_nome_imagem(carta)
         pilha_selecionada_1 = self._mesa.get_pilha_codigo(pilha1)
@@ -227,9 +226,6 @@ class Partida:
 
             elif jogada['tipo_jogada'] == 'compra':
                 self._mesa.get_pilha_codigo(jogada['pilha_remove']).retirar_cartas_pilha(self._mesa.get_cartas_codigo([jogada['cartas']]))
-
-            elif jogada['tipo_jogada'] == 'desistir':
-                self.toggle_partida_em_andamento()
 
     def toggle_partida_em_andamento(self):
         self._partida_em_andamento = not(self._partida_em_andamento)

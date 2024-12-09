@@ -124,13 +124,13 @@ class PlayerInterface(DogPlayerInterface):
         self.buy_button = tk.Button(self._center_frame, text="Comprar Carta", command=self.buy_card, bg="#f81313")
         self.buy_button.grid(row=2, column=2)
     
-    def get_codigo_cartas(self, cartas):
+    def get_codigo_cartas(self, cartas: list[object]):
         nome_correto_cartas = []
         for carta in cartas:
             nome_correto_cartas.append(f'{carta.get_numero()}_of_{carta._naipe.value.lower()}')
         return nome_correto_cartas
     
-    def get_nome_carta(self, codigo_carta):
+    def get_nome_carta(self, codigo_carta: str):
         letra_para_naipe = {
             "H": 'hearts',
             "S": 'spades',
@@ -322,7 +322,7 @@ class PlayerInterface(DogPlayerInterface):
             label.image = card_image
             label.place(relx=0.5, rely=0.5, anchor="center", x=offset_x, y=offset_y)
     
-    def selecionar_cartas_pilha(self, pilha):
+    def selecionar_cartas_pilha(self, pilha: str):
         """Exibe um modal para selecionar uma carta de uma pilha com scroll."""
         modal = tk.Toplevel(self._root)
         modal.title("Selecionar Carta")
@@ -466,7 +466,7 @@ class PlayerInterface(DogPlayerInterface):
 
         # status_jogo = self._partida.obtem_status()    #Continuo sem saber pra que serve
 
-    def receive_move(self, a_move):
+    def receive_move(self, a_move: dict):
         print(a_move)
         self._partida.receber_jogada(a_move)
         if a_move['tipo_jogada'] == 'inicio':
@@ -493,7 +493,7 @@ class PlayerInterface(DogPlayerInterface):
         self.receber_popup("O seu oponente desistiu da partida")
         self._root.destroy()
 
-    def receber_popup(mensagem: str):
+    def receber_popup(self, mensagem: str):
         messagebox.showinfo(message=mensagem)
 
 if __name__ == "__main__":
